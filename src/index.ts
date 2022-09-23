@@ -34,6 +34,7 @@ mercuriusCodegen(app, {
   codegenConfig: {
     scalars: {
       DateTime: "Date",
+      JWT: "string",
     },
   },
 }).catch(console.error);

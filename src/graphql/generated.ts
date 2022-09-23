@@ -34,6 +34,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: Date;
+  JWT: string;
   _FieldSet: any;
 };
 
@@ -52,9 +53,9 @@ export type Query = {
 export type Mutation = {
   __typename?: "Mutation";
   /** create a new User  and get a JWT to authenticate with */
-  signUp: Scalars["String"];
+  signUp: Scalars["JWT"];
   /** sign in with credentials and get a JWT to authenticate with */
-  signIn: Scalars["String"];
+  signIn: Scalars["JWT"];
 };
 
 export type MutationsignUpArgs = {
@@ -185,12 +186,13 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
+  JWT: ResolverTypeWrapper<Scalars["JWT"]>;
   Node: ResolversTypes["User"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
+  String: ResolverTypeWrapper<Scalars["String"]>;
   NamePasswordInput: NamePasswordInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
@@ -198,12 +200,13 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   DateTime: Scalars["DateTime"];
+  JWT: Scalars["JWT"];
   Node: ResolversParentTypes["User"];
   ID: Scalars["ID"];
   Query: {};
   Mutation: {};
-  String: Scalars["String"];
   User: User;
+  String: Scalars["String"];
   NamePasswordInput: NamePasswordInput;
   Boolean: Scalars["Boolean"];
 };
@@ -211,6 +214,11 @@ export type ResolversParentTypes = {
 export interface DateTimeScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
   name: "DateTime";
+}
+
+export interface JWTScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["JWT"], any> {
+  name: "JWT";
 }
 
 export type NodeResolvers<
@@ -236,13 +244,13 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = {
   signUp?: Resolver<
-    ResolversTypes["String"],
+    ResolversTypes["JWT"],
     ParentType,
     ContextType,
     RequireFields<MutationsignUpArgs, "credentials">
   >;
   signIn?: Resolver<
-    ResolversTypes["String"],
+    ResolversTypes["JWT"],
     ParentType,
     ContextType,
     RequireFields<MutationsignInArgs, "credentials">
@@ -267,6 +275,7 @@ export type UserResolvers<
 
 export type Resolvers<ContextType = MercuriusContext> = {
   DateTime?: GraphQLScalarType;
+  JWT?: GraphQLScalarType;
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

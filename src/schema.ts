@@ -2,6 +2,7 @@ import { gql } from "mercurius-codegen";
 
 export const schema = gql`
   scalar DateTime
+  scalar JWT
 
   interface Node {
     id: ID!
@@ -18,11 +19,11 @@ export const schema = gql`
     """
     create a new User  and get a JWT to authenticate with
     """
-    signUp(credentials: NamePasswordInput!): String!
+    signUp(credentials: NamePasswordInput!): JWT!
     """
     sign in with credentials and get a JWT to authenticate with
     """
-    signIn(credentials: NamePasswordInput!): String!
+    signIn(credentials: NamePasswordInput!): JWT!
   }
 
   type User implements Node {
