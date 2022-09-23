@@ -3,7 +3,7 @@ import * as argon2 from "argon2";
 import { prisma } from "..";
 
 export const signUp: MutationResolvers["signUp"] = async (
-  parent,
+  root,
   { credentials },
   ctx
 ) => {
@@ -24,7 +24,7 @@ export const signUp: MutationResolvers["signUp"] = async (
 };
 
 export const signIn: MutationResolvers["signIn"] = async (
-  parent,
+  root,
   { credentials },
   ctx
 ) => {

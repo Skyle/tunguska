@@ -11,10 +11,39 @@ datasource db {
 }
 
 model UserDB {
-  id            String    @id @default(cuid())
-  name          String    @unique
-  password      String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastVisitedAt DateTime?
+  id                String                 @id @default(cuid())
+  name              String                 @unique
+  password          String
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  lastVisitedAt     DateTime?
+  createdActivities ActivityDB[]
+  joinedActivities  ActivityAttendanceDB[]
+}
+
+model ActivityAttendanceDB {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  user       UserDB     @relation(fields: [userId], references: [id])
+  userId     String
+  activity   ActivityDB @relation(fields: [activityId], references: [id])
+  activityId String
+}
+
+model ActivityDB {
+  id           String                 @id @default(cuid())
+  title        String?
+  beschreibung String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  createdBy    UserDB                 @relation(fields: [createdById], references: [id])
+  createdById  String
+  venue        String?
+  geoLocation  String?
+  startsAt     DateTime?
+  endsAt       DateTime?
+  barrierefrei Boolean?
+  public       Boolean?
+  joinedBy     ActivityAttendanceDB[]
 }

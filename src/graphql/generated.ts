@@ -48,6 +48,7 @@ export type Query = {
   __typename?: "Query";
   users: Array<User>;
   me: User;
+  activities: Array<Activity>;
 };
 
 export type Mutation = {
@@ -56,6 +57,7 @@ export type Mutation = {
   signUp: Scalars["JWT"];
   /** sign in with credentials and get a JWT to authenticate with */
   signIn: Scalars["JWT"];
+  createActivity: Activity;
 };
 
 export type MutationsignUpArgs = {
@@ -66,6 +68,10 @@ export type MutationsignInArgs = {
   credentials: NamePasswordInput;
 };
 
+export type MutationcreateActivityArgs = {
+  activityInput: ActivityInput;
+};
+
 export type User = Node & {
   __typename?: "User";
   id: Scalars["ID"];
@@ -73,6 +79,36 @@ export type User = Node & {
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
   lastVisitedAt?: Maybe<Scalars["DateTime"]>;
+  createdActivities: Array<Activity>;
+};
+
+export type Activity = Node & {
+  __typename?: "Activity";
+  id: Scalars["ID"];
+  title?: Maybe<Scalars["String"]>;
+  beschreibung?: Maybe<Scalars["String"]>;
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
+  createdBy: User;
+  createdById: Scalars["String"];
+  venue?: Maybe<Scalars["String"]>;
+  geoLocation?: Maybe<Scalars["String"]>;
+  startsAt?: Maybe<Scalars["DateTime"]>;
+  endsAt?: Maybe<Scalars["DateTime"]>;
+  barrierefrei?: Maybe<Scalars["Boolean"]>;
+  public?: Maybe<Scalars["Boolean"]>;
+  joinedBy: Array<ActivityAttendance>;
+};
+
+export type ActivityAttendance = Node & {
+  __typename?: "ActivityAttendance";
+  id: Scalars["ID"];
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
+  user: User;
+  userId: Scalars["String"];
+  activity: Activity;
+  activityId: Scalars["String"];
 };
 
 export type NamePasswordInput = {
@@ -83,6 +119,17 @@ export type NamePasswordInput = {
   name: Scalars["String"];
   /** length >= 6 */
   password: Scalars["String"];
+};
+
+export type ActivityInput = {
+  title?: InputMaybe<Scalars["String"]>;
+  beschreibung?: InputMaybe<Scalars["String"]>;
+  venue?: InputMaybe<Scalars["String"]>;
+  geoLocation?: InputMaybe<Scalars["String"]>;
+  startsAt?: InputMaybe<Scalars["DateTime"]>;
+  endsAt?: InputMaybe<Scalars["DateTime"]>;
+  barrierefrei?: InputMaybe<Scalars["Boolean"]>;
+  public?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -187,28 +234,40 @@ export type DirectiveResolverFn<
 export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   JWT: ResolverTypeWrapper<Scalars["JWT"]>;
-  Node: ResolversTypes["User"];
+  Node:
+    | ResolversTypes["User"]
+    | ResolversTypes["Activity"]
+    | ResolversTypes["ActivityAttendance"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars["String"]>;
-  NamePasswordInput: NamePasswordInput;
+  Activity: ResolverTypeWrapper<Activity>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+  ActivityAttendance: ResolverTypeWrapper<ActivityAttendance>;
+  NamePasswordInput: NamePasswordInput;
+  ActivityInput: ActivityInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   DateTime: Scalars["DateTime"];
   JWT: Scalars["JWT"];
-  Node: ResolversParentTypes["User"];
+  Node:
+    | ResolversParentTypes["User"]
+    | ResolversParentTypes["Activity"]
+    | ResolversParentTypes["ActivityAttendance"];
   ID: Scalars["ID"];
   Query: {};
   Mutation: {};
   User: User;
   String: Scalars["String"];
-  NamePasswordInput: NamePasswordInput;
+  Activity: Activity;
   Boolean: Scalars["Boolean"];
+  ActivityAttendance: ActivityAttendance;
+  NamePasswordInput: NamePasswordInput;
+  ActivityInput: ActivityInput;
 };
 
 export interface DateTimeScalarConfig
@@ -225,7 +284,11 @@ export type NodeResolvers<
   ContextType = MercuriusContext,
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = {
-  resolveType: TypeResolveFn<"User", ParentType, ContextType>;
+  resolveType: TypeResolveFn<
+    "User" | "Activity" | "ActivityAttendance",
+    ParentType,
+    ContextType
+  >;
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
@@ -237,6 +300,11 @@ export type QueryResolvers<
 > = {
   users?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
   me?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  activities?: Resolver<
+    Array<ResolversTypes["Activity"]>,
+    ParentType,
+    ContextType
+  >;
 };
 
 export type MutationResolvers<
@@ -255,6 +323,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationsignInArgs, "credentials">
   >;
+  createActivity?: Resolver<
+    ResolversTypes["Activity"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationcreateActivityArgs, "activityInput">
+  >;
 };
 
 export type UserResolvers<
@@ -270,6 +344,66 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  createdActivities?: Resolver<
+    Array<ResolversTypes["Activity"]>,
+    ParentType,
+    ContextType
+  >;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ActivityResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["Activity"] = ResolversParentTypes["Activity"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  beschreibung?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  createdById?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  venue?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  geoLocation?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  startsAt?: Resolver<
+    Maybe<ResolversTypes["DateTime"]>,
+    ParentType,
+    ContextType
+  >;
+  endsAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
+  barrierefrei?: Resolver<
+    Maybe<ResolversTypes["Boolean"]>,
+    ParentType,
+    ContextType
+  >;
+  public?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  joinedBy?: Resolver<
+    Array<ResolversTypes["ActivityAttendance"]>,
+    ParentType,
+    ContextType
+  >;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ActivityAttendanceResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["ActivityAttendance"] = ResolversParentTypes["ActivityAttendance"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  activity?: Resolver<ResolversTypes["Activity"], ParentType, ContextType>;
+  activityId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -280,6 +414,8 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Activity?: ActivityResolvers<ContextType>;
+  ActivityAttendance?: ActivityAttendanceResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (
@@ -312,6 +448,79 @@ export interface Loaders<
     lastVisitedAt?: LoaderResolver<
       Maybe<Scalars["DateTime"]>,
       User,
+      {},
+      TContext
+    >;
+    createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
+  };
+
+  Activity?: {
+    id?: LoaderResolver<Scalars["ID"], Activity, {}, TContext>;
+    title?: LoaderResolver<Maybe<Scalars["String"]>, Activity, {}, TContext>;
+    beschreibung?: LoaderResolver<
+      Maybe<Scalars["String"]>,
+      Activity,
+      {},
+      TContext
+    >;
+    createdAt?: LoaderResolver<Scalars["DateTime"], Activity, {}, TContext>;
+    updatedAt?: LoaderResolver<Scalars["DateTime"], Activity, {}, TContext>;
+    createdBy?: LoaderResolver<User, Activity, {}, TContext>;
+    createdById?: LoaderResolver<Scalars["String"], Activity, {}, TContext>;
+    venue?: LoaderResolver<Maybe<Scalars["String"]>, Activity, {}, TContext>;
+    geoLocation?: LoaderResolver<
+      Maybe<Scalars["String"]>,
+      Activity,
+      {},
+      TContext
+    >;
+    startsAt?: LoaderResolver<
+      Maybe<Scalars["DateTime"]>,
+      Activity,
+      {},
+      TContext
+    >;
+    endsAt?: LoaderResolver<Maybe<Scalars["DateTime"]>, Activity, {}, TContext>;
+    barrierefrei?: LoaderResolver<
+      Maybe<Scalars["Boolean"]>,
+      Activity,
+      {},
+      TContext
+    >;
+    public?: LoaderResolver<Maybe<Scalars["Boolean"]>, Activity, {}, TContext>;
+    joinedBy?: LoaderResolver<
+      Array<ActivityAttendance>,
+      Activity,
+      {},
+      TContext
+    >;
+  };
+
+  ActivityAttendance?: {
+    id?: LoaderResolver<Scalars["ID"], ActivityAttendance, {}, TContext>;
+    createdAt?: LoaderResolver<
+      Scalars["DateTime"],
+      ActivityAttendance,
+      {},
+      TContext
+    >;
+    updatedAt?: LoaderResolver<
+      Scalars["DateTime"],
+      ActivityAttendance,
+      {},
+      TContext
+    >;
+    user?: LoaderResolver<User, ActivityAttendance, {}, TContext>;
+    userId?: LoaderResolver<
+      Scalars["String"],
+      ActivityAttendance,
+      {},
+      TContext
+    >;
+    activity?: LoaderResolver<Activity, ActivityAttendance, {}, TContext>;
+    activityId?: LoaderResolver<
+      Scalars["String"],
+      ActivityAttendance,
       {},
       TContext
     >;
