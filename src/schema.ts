@@ -16,9 +16,9 @@ export const schema = gql`
 
   type Mutation {
     """
-    create a new User
+    create a new User  and get a JWT to authenticate with
     """
-    signUp(credentials: NamePasswordInput!): User!
+    signUp(credentials: NamePasswordInput!): String!
     """
     sign in with credentials and get a JWT to authenticate with
     """

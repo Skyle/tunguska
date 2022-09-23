@@ -51,8 +51,8 @@ export type Query = {
 
 export type Mutation = {
   __typename?: "Mutation";
-  /** create a new User */
-  signUp: User;
+  /** create a new User  and get a JWT to authenticate with */
+  signUp: Scalars["String"];
   /** sign in with credentials and get a JWT to authenticate with */
   signIn: Scalars["String"];
 };
@@ -236,7 +236,7 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = {
   signUp?: Resolver<
-    ResolversTypes["User"],
+    ResolversTypes["String"],
     ParentType,
     ContextType,
     RequireFields<MutationsignUpArgs, "credentials">

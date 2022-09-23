@@ -4,16 +4,19 @@ import { prisma } from "..";
 
 export const signUp: MutationResolvers["signUp"] = async (
   parent,
-  { credentials }
+  { credentials },
+  ctx
 ) => {
   const { name, password } = credentials;
   if (password.length < 6 || name === "" || name.length < 2)
     throw new Error("password oder name sind zu kurz");
   const hashedPassword = await argon2.hash(password);
   try {
-    return await prisma.userDB.create({
+    const newUser = await prisma.userDB.create({
       data: { name: name, password: hashedPassword },
     });
+    const jwt = ctx.app.jwt.sign({ sub: newUser.id });
+    return jwt;
   } catch (error) {
     console.error(error);
     throw new Error("kann User nicht erstellen");
