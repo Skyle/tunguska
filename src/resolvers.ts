@@ -7,6 +7,8 @@ export const resolvers: IResolvers = {
   Query: {
     async users(root, args, ctx) {
       const verifiedUser = userOrThrow(ctx);
+      console.log(verifiedUser);
+
       const users = await prisma.userDB.findMany();
       return users;
     },
