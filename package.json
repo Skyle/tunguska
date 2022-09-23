@@ -2,6 +2,7 @@
   "name": "tunguska",
   "version": "0.0.0",
   "scripts": {
+    "reload": "pm2 stop tunguska && git pull && npm i && npm run build && npm run db && pm2 start tunguska",
     "build": "tsc",
     "db": "npx prisma migrate dev",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
