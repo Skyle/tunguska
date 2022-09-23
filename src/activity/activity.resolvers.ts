@@ -22,13 +22,19 @@ export const activities: QueryResolvers["activities"] = async (
   args,
   ctx
 ) => {
-  return await prisma.activityDB.findMany();
+  return await prisma.activityDB.findMany({
+    where: { public: true },
+    take: args.limit ?? 10,
+    skip: args.skip ?? 0,
+    orderBy: { createdAt: args.order === "ASC" ? "asc" : "desc" },
+  });
 };
 
 export const createdBy: ActivityResolvers["createdBy"] = async (root) => {
   const user = await prisma.activityDB
     .findUnique({ where: { id: root.id } })
     .createdBy();
+
   if (!user) throw new Error("Activity sollte eigentlich einen User haben");
   return user;
 };

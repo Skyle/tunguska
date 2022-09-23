@@ -1,4 +1,14 @@
 -- CreateTable
+CREATE TABLE "UserDB" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "lastVisitedAt" DATETIME
+);
+
+-- CreateTable
 CREATE TABLE "ActivityAttendanceDB" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -13,7 +23,7 @@ CREATE TABLE "ActivityAttendanceDB" (
 CREATE TABLE "ActivityDB" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT,
-    "beschreibung" TEXT,
+    "description" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "createdById" TEXT NOT NULL,
@@ -21,7 +31,10 @@ CREATE TABLE "ActivityDB" (
     "geoLocation" TEXT,
     "startsAt" DATETIME,
     "endsAt" DATETIME,
-    "barrierefrei" BOOLEAN,
+    "barrierfree" BOOLEAN,
     "public" BOOLEAN,
     CONSTRAINT "ActivityDB_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "UserDB" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserDB_name_key" ON "UserDB"("name");

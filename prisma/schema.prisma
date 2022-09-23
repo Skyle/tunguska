@@ -34,7 +34,7 @@ model ActivityAttendanceDB {
 model ActivityDB {
   id           String                 @id @default(cuid())
   title        String?
-  beschreibung String?
+  description String?
   createdAt    DateTime               @default(now())
   updatedAt    DateTime               @updatedAt
   createdBy    UserDB                 @relation(fields: [createdById], references: [id])
@@ -43,7 +43,7 @@ model ActivityDB {
   geoLocation  String?
   startsAt     DateTime?
   endsAt       DateTime?
-  barrierefrei Boolean?
+  barrierfree Boolean?
   public       Boolean?
   joinedBy     ActivityAttendanceDB[]
 }

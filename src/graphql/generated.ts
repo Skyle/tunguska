@@ -38,6 +38,11 @@ export type Scalars = {
   _FieldSet: any;
 };
 
+export enum Order {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 export type Node = {
   id: Scalars["ID"];
   createdAt: Scalars["DateTime"];
@@ -46,9 +51,18 @@ export type Node = {
 
 export type Query = {
   __typename?: "Query";
+  /** returns all users */
   users: Array<User>;
+  /** returns the currently logged in user */
   me: User;
+  /** return all public activities */
   activities: Array<Activity>;
+};
+
+export type QueryactivitiesArgs = {
+  limit?: InputMaybe<Scalars["Float"]>;
+  skip?: InputMaybe<Scalars["Float"]>;
+  order?: InputMaybe<Order>;
 };
 
 export type Mutation = {
@@ -57,6 +71,7 @@ export type Mutation = {
   signUp: Scalars["JWT"];
   /** sign in with credentials and get a JWT to authenticate with */
   signIn: Scalars["JWT"];
+  /** create a new activity */
   createActivity: Activity;
 };
 
@@ -86,7 +101,7 @@ export type Activity = Node & {
   __typename?: "Activity";
   id: Scalars["ID"];
   title?: Maybe<Scalars["String"]>;
-  beschreibung?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
   createdBy: User;
@@ -95,7 +110,7 @@ export type Activity = Node & {
   geoLocation?: Maybe<Scalars["String"]>;
   startsAt?: Maybe<Scalars["DateTime"]>;
   endsAt?: Maybe<Scalars["DateTime"]>;
-  barrierefrei?: Maybe<Scalars["Boolean"]>;
+  barrierfree?: Maybe<Scalars["Boolean"]>;
   public?: Maybe<Scalars["Boolean"]>;
   joinedBy: Array<ActivityAttendance>;
 };
@@ -123,12 +138,12 @@ export type NamePasswordInput = {
 
 export type ActivityInput = {
   title?: InputMaybe<Scalars["String"]>;
-  beschreibung?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]>;
   venue?: InputMaybe<Scalars["String"]>;
   geoLocation?: InputMaybe<Scalars["String"]>;
   startsAt?: InputMaybe<Scalars["DateTime"]>;
   endsAt?: InputMaybe<Scalars["DateTime"]>;
-  barrierefrei?: InputMaybe<Scalars["Boolean"]>;
+  barrierfree?: InputMaybe<Scalars["Boolean"]>;
   public?: InputMaybe<Scalars["Boolean"]>;
 };
 
@@ -234,12 +249,14 @@ export type DirectiveResolverFn<
 export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   JWT: ResolverTypeWrapper<Scalars["JWT"]>;
+  Order: Order;
   Node:
     | ResolversTypes["User"]
     | ResolversTypes["Activity"]
     | ResolversTypes["ActivityAttendance"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
+  Float: ResolverTypeWrapper<Scalars["Float"]>;
   Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars["String"]>;
@@ -260,6 +277,7 @@ export type ResolversParentTypes = {
     | ResolversParentTypes["ActivityAttendance"];
   ID: Scalars["ID"];
   Query: {};
+  Float: Scalars["Float"];
   Mutation: {};
   User: User;
   String: Scalars["String"];
@@ -303,7 +321,8 @@ export type QueryResolvers<
   activities?: Resolver<
     Array<ResolversTypes["Activity"]>,
     ParentType,
-    ContextType
+    ContextType,
+    Partial<QueryactivitiesArgs>
   >;
 };
 
@@ -358,7 +377,7 @@ export type ActivityResolvers<
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
-  beschreibung?: Resolver<
+  description?: Resolver<
     Maybe<ResolversTypes["String"]>,
     ParentType,
     ContextType
@@ -379,7 +398,7 @@ export type ActivityResolvers<
     ContextType
   >;
   endsAt?: Resolver<Maybe<ResolversTypes["DateTime"]>, ParentType, ContextType>;
-  barrierefrei?: Resolver<
+  barrierfree?: Resolver<
     Maybe<ResolversTypes["Boolean"]>,
     ParentType,
     ContextType
@@ -457,7 +476,7 @@ export interface Loaders<
   Activity?: {
     id?: LoaderResolver<Scalars["ID"], Activity, {}, TContext>;
     title?: LoaderResolver<Maybe<Scalars["String"]>, Activity, {}, TContext>;
-    beschreibung?: LoaderResolver<
+    description?: LoaderResolver<
       Maybe<Scalars["String"]>,
       Activity,
       {},
@@ -481,7 +500,7 @@ export interface Loaders<
       TContext
     >;
     endsAt?: LoaderResolver<Maybe<Scalars["DateTime"]>, Activity, {}, TContext>;
-    barrierefrei?: LoaderResolver<
+    barrierfree?: LoaderResolver<
       Maybe<Scalars["Boolean"]>,
       Activity,
       {},

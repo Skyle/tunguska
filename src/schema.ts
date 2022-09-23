@@ -4,6 +4,11 @@ export const schema = gql`
   scalar DateTime
   scalar JWT
 
+  enum Order {
+    ASC
+    DESC
+  }
+
   interface Node {
     id: ID!
     createdAt: DateTime!
@@ -11,9 +16,18 @@ export const schema = gql`
   }
 
   type Query {
+    """
+    returns all users
+    """
     users: [User!]!
+    """
+    returns the currently logged in user
+    """
     me: User!
-    activities: [Activity!]!
+    """
+    return all public activities
+    """
+    activities(limit: Float, skip: Float, order: Order): [Activity!]!
   }
 
   type Mutation {
@@ -25,7 +39,9 @@ export const schema = gql`
     sign in with credentials and get a JWT to authenticate with
     """
     signIn(credentials: NamePasswordInput!): JWT!
-
+    """
+    create a new activity
+    """
     createActivity(activityInput: ActivityInput!): Activity!
   }
 
@@ -41,7 +57,7 @@ export const schema = gql`
   type Activity implements Node {
     id: ID!
     title: String
-    beschreibung: String
+    description: String
     createdAt: DateTime!
     updatedAt: DateTime!
     createdBy: User!
@@ -50,7 +66,7 @@ export const schema = gql`
     geoLocation: String
     startsAt: DateTime
     endsAt: DateTime
-    barrierefrei: Boolean
+    barrierfree: Boolean
     public: Boolean
     joinedBy: [ActivityAttendance!]!
   }
@@ -80,12 +96,12 @@ export const schema = gql`
 
   input ActivityInput {
     title: String
-    beschreibung: String
+    description: String
     venue: String
     geoLocation: String
     startsAt: DateTime
     endsAt: DateTime
-    barrierefrei: Boolean
+    barrierfree: Boolean
     public: Boolean
   }
 `;
