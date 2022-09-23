@@ -11,6 +11,10 @@ export async function userOrThrow(ctx: MercuriusContext) {
         where: { id: verifiedJWT.sub },
       });
       if (!user) throw new Error("UNAUTHORIZED");
+      await prisma.userDB.update({
+        where: { id: user.id },
+        data: { lastVisitedAt: new Date() },
+      });
       return user;
     } else {
       throw new Error("UNAUTHORIZED");

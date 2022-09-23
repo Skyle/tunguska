@@ -39,6 +39,8 @@ export type Scalars = {
 
 export type Node = {
   id: Scalars["ID"];
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
 };
 
 export type Query = {
@@ -49,18 +51,18 @@ export type Query = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  /** create a new User */
   signUp: User;
+  /** sign in with credentials and get a JWT to authenticate with */
   signIn: Scalars["String"];
 };
 
 export type MutationsignUpArgs = {
-  name: Scalars["String"];
-  password: Scalars["String"];
+  credentials: NamePasswordInput;
 };
 
 export type MutationsignInArgs = {
-  name: Scalars["String"];
-  password: Scalars["String"];
+  credentials: NamePasswordInput;
 };
 
 export type User = Node & {
@@ -69,6 +71,17 @@ export type User = Node & {
   name: Scalars["String"];
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
+  lastVisitedAt?: Maybe<Scalars["DateTime"]>;
+};
+
+export type NamePasswordInput = {
+  /**
+   * not empty
+   * length >= 2
+   */
+  name: Scalars["String"];
+  /** length >= 6 */
+  password: Scalars["String"];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -178,6 +191,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
+  NamePasswordInput: NamePasswordInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
@@ -190,6 +204,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   String: Scalars["String"];
   User: User;
+  NamePasswordInput: NamePasswordInput;
   Boolean: Scalars["Boolean"];
 };
 
@@ -204,6 +219,8 @@ export type NodeResolvers<
 > = {
   resolveType: TypeResolveFn<"User", ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
 };
 
 export type QueryResolvers<
@@ -222,13 +239,13 @@ export type MutationResolvers<
     ResolversTypes["User"],
     ParentType,
     ContextType,
-    RequireFields<MutationsignUpArgs, "name" | "password">
+    RequireFields<MutationsignUpArgs, "credentials">
   >;
   signIn?: Resolver<
     ResolversTypes["String"],
     ParentType,
     ContextType,
-    RequireFields<MutationsignInArgs, "name" | "password">
+    RequireFields<MutationsignInArgs, "credentials">
   >;
 };
 
@@ -240,6 +257,11 @@ export type UserResolvers<
   name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  lastVisitedAt?: Resolver<
+    Maybe<ResolversTypes["DateTime"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -278,6 +300,12 @@ export interface Loaders<
     name?: LoaderResolver<Scalars["String"], User, {}, TContext>;
     createdAt?: LoaderResolver<Scalars["DateTime"], User, {}, TContext>;
     updatedAt?: LoaderResolver<Scalars["DateTime"], User, {}, TContext>;
+    lastVisitedAt?: LoaderResolver<
+      Maybe<Scalars["DateTime"]>,
+      User,
+      {},
+      TContext
+    >;
   };
 }
 declare module "mercurius" {

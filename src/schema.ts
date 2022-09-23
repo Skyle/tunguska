@@ -5,6 +5,8 @@ export const schema = gql`
 
   interface Node {
     id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
   }
 
   type Query {
@@ -13,8 +15,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    signUp(name: String!, password: String!): User!
-    signIn(name: String!, password: String!): String!
+    """
+    create a new User
+    """
+    signUp(credentials: NamePasswordInput!): User!
+    """
+    sign in with credentials and get a JWT to authenticate with
+    """
+    signIn(credentials: NamePasswordInput!): String!
   }
 
   type User implements Node {
@@ -22,5 +30,19 @@ export const schema = gql`
     name: String!
     createdAt: DateTime!
     updatedAt: DateTime!
+    lastVisitedAt: DateTime
+  }
+
+  input NamePasswordInput {
+    """
+    not empty
+    length >= 2
+    """
+    name: String!
+
+    """
+    length >= 6
+    """
+    password: String!
   }
 `;
