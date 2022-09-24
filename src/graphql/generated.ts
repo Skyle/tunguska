@@ -71,8 +71,10 @@ export type Mutation = {
   signUp: Scalars["JWT"];
   /** sign in with credentials and get a JWT to authenticate with */
   signIn: Scalars["JWT"];
-  /** create a new activity */
+  /** create an new activity */
   createActivity: Activity;
+  /** deletes an activity by ID */
+  deleteActivity: Scalars["String"];
 };
 
 export type MutationsignUpArgs = {
@@ -85,6 +87,10 @@ export type MutationsignInArgs = {
 
 export type MutationcreateActivityArgs = {
   activityInput: ActivityInput;
+};
+
+export type MutationdeleteActivityArgs = {
+  id: Scalars["ID"];
 };
 
 export type User = Node & {
@@ -105,7 +111,6 @@ export type Activity = Node & {
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
   createdBy: User;
-  createdById: Scalars["String"];
   venue?: Maybe<Scalars["String"]>;
   geoLocation?: Maybe<Scalars["String"]>;
   startsAt?: Maybe<Scalars["DateTime"]>;
@@ -121,9 +126,7 @@ export type ActivityAttendance = Node & {
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
   user: User;
-  userId: Scalars["String"];
   activity: Activity;
-  activityId: Scalars["String"];
 };
 
 export type NamePasswordInput = {
@@ -258,8 +261,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
   Mutation: ResolverTypeWrapper<{}>;
-  User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars["String"]>;
+  User: ResolverTypeWrapper<User>;
   Activity: ResolverTypeWrapper<Activity>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   ActivityAttendance: ResolverTypeWrapper<ActivityAttendance>;
@@ -279,8 +282,8 @@ export type ResolversParentTypes = {
   Query: {};
   Float: Scalars["Float"];
   Mutation: {};
-  User: User;
   String: Scalars["String"];
+  User: User;
   Activity: Activity;
   Boolean: Scalars["Boolean"];
   ActivityAttendance: ActivityAttendance;
@@ -348,6 +351,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationcreateActivityArgs, "activityInput">
   >;
+  deleteActivity?: Resolver<
+    ResolversTypes["String"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationdeleteActivityArgs, "id">
+  >;
 };
 
 export type UserResolvers<
@@ -385,7 +394,6 @@ export type ActivityResolvers<
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
-  createdById?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   venue?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   geoLocation?: Resolver<
     Maybe<ResolversTypes["String"]>,
@@ -420,9 +428,7 @@ export type ActivityAttendanceResolvers<
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
   user?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
-  userId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   activity?: Resolver<ResolversTypes["Activity"], ParentType, ContextType>;
-  activityId?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -485,7 +491,6 @@ export interface Loaders<
     createdAt?: LoaderResolver<Scalars["DateTime"], Activity, {}, TContext>;
     updatedAt?: LoaderResolver<Scalars["DateTime"], Activity, {}, TContext>;
     createdBy?: LoaderResolver<User, Activity, {}, TContext>;
-    createdById?: LoaderResolver<Scalars["String"], Activity, {}, TContext>;
     venue?: LoaderResolver<Maybe<Scalars["String"]>, Activity, {}, TContext>;
     geoLocation?: LoaderResolver<
       Maybe<Scalars["String"]>,
@@ -530,19 +535,7 @@ export interface Loaders<
       TContext
     >;
     user?: LoaderResolver<User, ActivityAttendance, {}, TContext>;
-    userId?: LoaderResolver<
-      Scalars["String"],
-      ActivityAttendance,
-      {},
-      TContext
-    >;
     activity?: LoaderResolver<Activity, ActivityAttendance, {}, TContext>;
-    activityId?: LoaderResolver<
-      Scalars["String"],
-      ActivityAttendance,
-      {},
-      TContext
-    >;
   };
 }
 declare module "mercurius" {

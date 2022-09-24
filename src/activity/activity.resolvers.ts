@@ -6,16 +6,7 @@ import {
   QueryResolvers,
 } from "../graphql/generated";
 
-export const createActivity: MutationResolvers["createActivity"] = async (
-  root,
-  { activityInput },
-  ctx
-) => {
-  const verifiedUser = await userOrThrow(ctx);
-  return await prisma.activityDB.create({
-    data: { ...activityInput, createdBy: { connect: { id: verifiedUser.id } } },
-  });
-};
+// Queries
 
 export const activities: QueryResolvers["activities"] = async (
   root,
@@ -30,12 +21,57 @@ export const activities: QueryResolvers["activities"] = async (
   });
 };
 
+// Mutations
+
+export const createActivity: MutationResolvers["createActivity"] = async (
+  root,
+  { activityInput },
+  ctx
+) => {
+  const verifiedUser = await userOrThrow(ctx);
+  try {
+    return await prisma.activityDB.create({
+      data: {
+        ...activityInput,
+        createdBy: { connect: { id: verifiedUser.id } },
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error("Activity could not be created");
+  }
+};
+
+export const deleteActivity: MutationResolvers["deleteActivity"] = async (
+  root,
+  { id },
+  ctx
+) => {
+  const verifiedUser = await userOrThrow(ctx);
+  const activity = await prisma.activityDB.findUnique({
+    where: { id },
+  });
+  if (!activity) throw new Error("Activity could not be found");
+  if (activity.createdById !== verifiedUser.id) {
+    throw new Error("foreign Activities can not be deleted");
+  }
+  try {
+    await prisma.activityDB.delete({ where: { id: activity.id } });
+    return "Activity " + activity.id + " deleted";
+  } catch (error) {
+    console.error(error);
+    throw new Error("Activity could not be deleted");
+  }
+};
+
+// FieldResolvers
+
 export const createdBy: ActivityResolvers["createdBy"] = async (root) => {
   const user = await prisma.activityDB
     .findUnique({ where: { id: root.id } })
     .createdBy();
 
-  if (!user) throw new Error("Activity sollte eigentlich einen User haben");
+  if (!user) throw new Error("Activity should always have a creator");
   return user;
 };
 

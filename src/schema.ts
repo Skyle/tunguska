@@ -40,9 +40,13 @@ export const schema = gql`
     """
     signIn(credentials: NamePasswordInput!): JWT!
     """
-    create a new activity
+    create an new activity
     """
     createActivity(activityInput: ActivityInput!): Activity!
+    """
+    deletes an activity by ID
+    """
+    deleteActivity(id: ID!): String!
   }
 
   type User implements Node {
@@ -61,7 +65,6 @@ export const schema = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     createdBy: User!
-    createdById: String!
     venue: String
     geoLocation: String
     startsAt: DateTime
@@ -76,9 +79,7 @@ export const schema = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     user: User!
-    userId: String!
     activity: Activity!
-    activityId: String!
   }
 
   input NamePasswordInput {

@@ -19,7 +19,7 @@ export const signUp: MutationResolvers["signUp"] = async (
     return jwt;
   } catch (error) {
     console.error(error);
-    throw new Error("can not create User");
+    throw new Error("User could not be created");
   }
 };
 
