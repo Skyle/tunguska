@@ -5,7 +5,13 @@ export const schema = gql`
   scalar JWT
 
   enum Order {
+    """
+    createdAt ascending
+    """
     ASC
+    """
+    createdAt descending
+    """
     DESC
   }
 

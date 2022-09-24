@@ -39,7 +39,9 @@ export type Scalars = {
 };
 
 export enum Order {
+  /** createdAt ascending */
   ASC = "ASC",
+  /** createdAt descending */
   DESC = "DESC",
 }
 
