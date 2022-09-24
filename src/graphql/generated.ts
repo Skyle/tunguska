@@ -120,6 +120,7 @@ export type User = Node & {
   updatedAt: Scalars["DateTime"];
   lastVisitedAt?: Maybe<Scalars["DateTime"]>;
   createdActivities: Array<Activity>;
+  participatesIn: Array<Participation>;
 };
 
 export type Activity = Node & {
@@ -136,7 +137,7 @@ export type Activity = Node & {
   endsAt?: Maybe<Scalars["DateTime"]>;
   barrierFree?: Maybe<Scalars["Boolean"]>;
   public?: Maybe<Scalars["Boolean"]>;
-  joinedBy: Array<Attendance>;
+  participations: Array<Participation>;
   freeWifiAvailable?: Maybe<Scalars["Boolean"]>;
   toilettsAvailable?: Maybe<Scalars["Boolean"]>;
   hygienePolicy?: Maybe<Scalars["String"]>;
@@ -144,8 +145,9 @@ export type Activity = Node & {
   petsWelcome?: Maybe<Scalars["Boolean"]>;
 };
 
-export type Attendance = Node & {
-  __typename?: "Attendance";
+/** Participation is when a User takes part in an Activity */
+export type Participation = Node & {
+  __typename?: "Participation";
   id: Scalars["ID"];
   createdAt: Scalars["DateTime"];
   updatedAt: Scalars["DateTime"];
@@ -285,7 +287,7 @@ export type ResolversTypes = {
   Node:
     | ResolversTypes["User"]
     | ResolversTypes["Activity"]
-    | ResolversTypes["Attendance"];
+    | ResolversTypes["Participation"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
@@ -294,7 +296,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   Activity: ResolverTypeWrapper<Activity>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
-  Attendance: ResolverTypeWrapper<Attendance>;
+  Participation: ResolverTypeWrapper<Participation>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -306,7 +308,7 @@ export type ResolversParentTypes = {
   Node:
     | ResolversParentTypes["User"]
     | ResolversParentTypes["Activity"]
-    | ResolversParentTypes["Attendance"];
+    | ResolversParentTypes["Participation"];
   ID: Scalars["ID"];
   Query: {};
   Float: Scalars["Float"];
@@ -315,7 +317,7 @@ export type ResolversParentTypes = {
   User: User;
   Activity: Activity;
   Boolean: Scalars["Boolean"];
-  Attendance: Attendance;
+  Participation: Participation;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -335,7 +337,7 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = {
   resolveType: TypeResolveFn<
-    "User" | "Activity" | "Attendance",
+    "User" | "Activity" | "Participation",
     ParentType,
     ContextType
   >;
@@ -424,6 +426,11 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  participatesIn?: Resolver<
+    Array<ResolversTypes["Participation"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -463,8 +470,8 @@ export type ActivityResolvers<
     ContextType
   >;
   public?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
-  joinedBy?: Resolver<
-    Array<ResolversTypes["Attendance"]>,
+  participations?: Resolver<
+    Array<ResolversTypes["Participation"]>,
     ParentType,
     ContextType
   >;
@@ -496,9 +503,9 @@ export type ActivityResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AttendanceResolvers<
+export type ParticipationResolvers<
   ContextType = MercuriusContext,
-  ParentType extends ResolversParentTypes["Attendance"] = ResolversParentTypes["Attendance"]
+  ParentType extends ResolversParentTypes["Participation"] = ResolversParentTypes["Participation"]
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
@@ -516,7 +523,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Activity?: ActivityResolvers<ContextType>;
-  Attendance?: AttendanceResolvers<ContextType>;
+  Participation?: ParticipationResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (
@@ -553,6 +560,7 @@ export interface Loaders<
       TContext
     >;
     createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
+    participatesIn?: LoaderResolver<Array<Participation>, User, {}, TContext>;
   };
 
   Activity?: {
@@ -593,7 +601,12 @@ export interface Loaders<
       TContext
     >;
     public?: LoaderResolver<Maybe<Scalars["Boolean"]>, Activity, {}, TContext>;
-    joinedBy?: LoaderResolver<Array<Attendance>, Activity, {}, TContext>;
+    participations?: LoaderResolver<
+      Array<Participation>,
+      Activity,
+      {},
+      TContext
+    >;
     freeWifiAvailable?: LoaderResolver<
       Maybe<Scalars["Boolean"]>,
       Activity,
@@ -626,12 +639,22 @@ export interface Loaders<
     >;
   };
 
-  Attendance?: {
-    id?: LoaderResolver<Scalars["ID"], Attendance, {}, TContext>;
-    createdAt?: LoaderResolver<Scalars["DateTime"], Attendance, {}, TContext>;
-    updatedAt?: LoaderResolver<Scalars["DateTime"], Attendance, {}, TContext>;
-    user?: LoaderResolver<User, Attendance, {}, TContext>;
-    activity?: LoaderResolver<Activity, Attendance, {}, TContext>;
+  Participation?: {
+    id?: LoaderResolver<Scalars["ID"], Participation, {}, TContext>;
+    createdAt?: LoaderResolver<
+      Scalars["DateTime"],
+      Participation,
+      {},
+      TContext
+    >;
+    updatedAt?: LoaderResolver<
+      Scalars["DateTime"],
+      Participation,
+      {},
+      TContext
+    >;
+    user?: LoaderResolver<User, Participation, {}, TContext>;
+    activity?: LoaderResolver<Activity, Participation, {}, TContext>;
   };
 }
 declare module "mercurius" {

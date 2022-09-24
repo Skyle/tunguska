@@ -23,3 +23,10 @@ export const createdActivities: UserResolvers["createdActivities"] = async (
     .createdActivities();
   return activities;
 };
+
+export const participatesIn: UserResolvers["participatesIn"] = async (root) => {
+  const activities = await prisma.userDB
+    .findUnique({ where: { id: root.id } })
+    .participatesIn();
+  return activities;
+};

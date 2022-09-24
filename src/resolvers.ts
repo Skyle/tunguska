@@ -1,18 +1,22 @@
 import { IResolvers } from "mercurius";
-import { prisma } from ".";
 import {
   activities,
   createActivity,
   createdBy,
   deleteActivity,
   joinActivity,
-  joinedBy,
   leaveActivity,
+  participations,
   updateActivity,
 } from "./activity/activity.resolvers";
-import { user } from "./attendance/attendance.resolvers";
+import { activity, user } from "./participation/participation.resolvers";
 import { signIn, signUp } from "./auth/auth.resolvers";
-import { createdActivities, me, users } from "./user/user.resolvers";
+import {
+  createdActivities,
+  me,
+  participatesIn,
+  users,
+} from "./user/user.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -34,7 +38,10 @@ export const resolvers: IResolvers = {
     leaveActivity: leaveActivity,
     updateActivity: updateActivity,
   },
-  Activity: { createdBy: createdBy, joinedBy: joinedBy },
-  User: { createdActivities: createdActivities },
-  Attendance: { user: user },
+  Activity: { createdBy: createdBy, participations: participations },
+  User: {
+    createdActivities: createdActivities,
+    participatesIn: participatesIn,
+  },
+  Participation: { user: user, activity: activity },
 };

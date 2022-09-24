@@ -100,7 +100,7 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
   if (!activity) throw new Error("Activity could not be found");
   if (activity.public === false) throw new Error("Activity must be public");
   try {
-    await prisma.attendanceDB.create({
+    await prisma.participationDB.create({
       data: {
         activity: { connect: { id: activity.id } },
         user: { connect: { id: verifiedUser.id } },
@@ -133,7 +133,7 @@ export const leaveActivity: MutationResolvers["leaveActivity"] = async (
   });
   if (!activity) throw new Error("Activity could not be found");
   try {
-    await prisma.attendanceDB.delete({
+    await prisma.participationDB.delete({
       where: {
         userId_activityId: { activityId: activity.id, userId: verifiedUser.id },
       },
@@ -168,9 +168,11 @@ export const createdBy: ActivityResolvers["createdBy"] = async (root) => {
   return user;
 };
 
-export const joinedBy: ActivityResolvers["joinedBy"] = async (root) => {
+export const participations: ActivityResolvers["participations"] = async (
+  root
+) => {
   const users = await prisma.activityDB
     .findUnique({ where: { id: root.id } })
-    .joinedBy();
+    .participations();
   return users;
 };

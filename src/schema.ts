@@ -68,6 +68,7 @@ export const schema = gql`
     updatedAt: DateTime!
     lastVisitedAt: DateTime
     createdActivities: [Activity!]!
+    participatesIn: [Participation!]!
   }
 
   type Activity implements Node {
@@ -83,7 +84,7 @@ export const schema = gql`
     endsAt: DateTime
     barrierFree: Boolean
     public: Boolean
-    joinedBy: [Attendance!]!
+    participations: [Participation!]!
     freeWifiAvailable: Boolean
     toilettsAvailable: Boolean
     hygienePolicy: String
@@ -91,7 +92,10 @@ export const schema = gql`
     petsWelcome: Boolean
   }
 
-  type Attendance implements Node {
+  """
+  Participation is when a User takes part in an Activity
+  """
+  type Participation implements Node {
     id: ID!
     createdAt: DateTime!
     updatedAt: DateTime!
