@@ -25,9 +25,9 @@ model AttendanceDB {
   id         String     @id @default(cuid())
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  user       UserDB     @relation(fields: [userId], references: [id])
+  user       UserDB     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  activity   ActivityDB @relation(fields: [activityId], references: [id])
+  activity   ActivityDB @relation(fields: [activityId], references: [id], onDelete: Cascade)
   activityId String
 
   @@unique([userId, activityId])

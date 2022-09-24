@@ -7,6 +7,8 @@ import {
   deleteActivity,
   joinActivity,
   joinedBy,
+  leaveActivity,
+  updateActivity,
 } from "./activity/activity.resolvers";
 import { user } from "./attendance/attendance.resolvers";
 import { signIn, signUp } from "./auth/auth.resolvers";
@@ -29,6 +31,8 @@ export const resolvers: IResolvers = {
     createActivity: createActivity,
     deleteActivity: deleteActivity,
     joinActivity: joinActivity,
+    leaveActivity: leaveActivity,
+    updateActivity: updateActivity,
   },
   Activity: { createdBy: createdBy, joinedBy: joinedBy },
   User: { createdActivities: createdActivities },

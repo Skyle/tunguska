@@ -65,8 +65,31 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   }
 };
 
+export const updateActivity: MutationResolvers["updateActivity"] = async (
+  _,
+  { id, activityInput },
+  ctx
+) => {
+  const verifiedUser = await userOrThrow(ctx);
+  const activityToUpdate = await prisma.activityDB.findUnique({
+    where: { id },
+  });
+
+  if (!activityToUpdate) throw new Error("Activity could not be found");
+
+  if (activityToUpdate.createdById !== verifiedUser.id) {
+    throw new Error("foreign Activities can not be updated");
+  }
+
+  const updatedActivity = await prisma.activityDB.update({
+    where: { id },
+    data: { ...activityInput },
+  });
+  return updatedActivity;
+};
+
 export const joinActivity: MutationResolvers["joinActivity"] = async (
-  root,
+  _,
   { id },
   ctx
 ) => {
@@ -77,23 +100,61 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
   if (!activity) throw new Error("Activity could not be found");
   if (activity.public === false) throw new Error("Activity must be public");
   try {
-    const attendance = await prisma.attendanceDB.create({
+    await prisma.attendanceDB.create({
       data: {
         activity: { connect: { id: activity.id } },
         user: { connect: { id: verifiedUser.id } },
       },
     });
-    return attendance;
+    return await prisma.activityDB.update({
+      where: { id: activity.id },
+      data: { updatedAt: new Date() },
+    });
   } catch (error) {
-    console.error(error);
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
       throw new Error("You already joined this Activity");
     }
+    console.error(error);
     throw new Error("Activity could not be joined");
   }
+};
+
+export const leaveActivity: MutationResolvers["leaveActivity"] = async (
+  _,
+  { id },
+  ctx
+) => {
+  const verifiedUser = await userOrThrow(ctx);
+  const activity = await prisma.activityDB.findUnique({
+    where: { id },
+  });
+  if (!activity) throw new Error("Activity could not be found");
+  try {
+    await prisma.attendanceDB.delete({
+      where: {
+        userId_activityId: { activityId: activity.id, userId: verifiedUser.id },
+      },
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      throw new Error("You are not attending this Activity");
+    }
+    console.error(error);
+    throw new Error("Activity could not be left");
+  }
+  const updatedActivity = await prisma.activityDB.update({
+    where: { id },
+    data: { updatedAt: new Date() },
+  });
+  if (!updatedActivity) throw new Error("Activity could not be found");
+
+  return updatedActivity;
 };
 
 // FieldResolvers
