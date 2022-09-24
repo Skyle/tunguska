@@ -16,6 +16,7 @@ export async function userOrThrow(ctx: MercuriusContext) {
         where: { id: user.id },
         data: { lastVisitedAt: new Date() },
       });
+      ctx.user = user;
       return user;
     } else {
       throw new Error("UNAUTHORIZED");

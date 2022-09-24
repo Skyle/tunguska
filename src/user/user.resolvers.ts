@@ -16,12 +16,21 @@ export const me: QueryResolvers["me"] = async (root, args, ctx) => {
 // FieldResolvers
 
 export const createdActivities: UserResolvers["createdActivities"] = async (
-  root
+  root,
+  args,
+  ctx
 ) => {
-  const activities = await prisma.userDB
-    .findUnique({ where: { id: root.id } })
-    .createdActivities();
-  return activities;
+  if (ctx.user && root.id === ctx.user.id) {
+    const activities = await prisma.userDB
+      .findUnique({ where: { id: root.id } })
+      .createdActivities();
+    return activities;
+  } else {
+    const activities = await prisma.userDB
+      .findUnique({ where: { id: root.id } })
+      .createdActivities({ where: { public: true } });
+    return activities;
+  }
 };
 
 export const participatesIn: UserResolvers["participatesIn"] = async (root) => {

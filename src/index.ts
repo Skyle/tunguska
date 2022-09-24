@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserDB } from "@prisma/client";
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import mercurius from "mercurius";
 import mercuriusCodegen from "mercurius-codegen";
@@ -19,6 +19,7 @@ app.register(jwt, {
 const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
   return {
     authorization: req.headers.authorization,
+    user: null,
   };
 };
 
@@ -47,7 +48,9 @@ type PromiseType<T> = T extends PromiseLike<infer U> ? U : T;
 
 declare module "mercurius" {
   interface MercuriusContext
-    extends PromiseType<ReturnType<typeof buildContext>> {}
+    extends PromiseType<ReturnType<typeof buildContext>> {
+    user: null | UserDB;
+  }
 }
 
 declare module "@fastify/jwt" {
