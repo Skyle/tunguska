@@ -17,15 +17,15 @@ export const schema = gql`
 
   type Query {
     """
-    returns all users
+    all users
     """
     users: [User!]!
     """
-    returns the currently logged in user
+    currently logged in user (you)
     """
     me: User!
     """
-    return all public activities
+    all public activities
     """
     activities(limit: Float, skip: Float, order: Order): [Activity!]!
   }
@@ -44,9 +44,21 @@ export const schema = gql`
     """
     createActivity(activityInput: ActivityInput!): Activity!
     """
-    deletes an activity by ID
+    delete an activity
     """
     deleteActivity(id: ID!): String!
+    """
+    update an activity
+    """
+    updateActivity(id: ID!, activityInput: ActivityInput!): Activity!
+    """
+    join an activity
+    """
+    joinActivity(id: ID!): Activity!
+    """
+    leave an activity
+    """
+    leaveActivity(id: ID!): Activity!
   }
 
   type User implements Node {
@@ -65,16 +77,21 @@ export const schema = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     createdBy: User!
-    venue: String
+    venueName: String
     geoLocation: String
     startsAt: DateTime
     endsAt: DateTime
-    barrierfree: Boolean
+    barrierFree: Boolean
     public: Boolean
-    joinedBy: [ActivityAttendance!]!
+    joinedBy: [Attendance!]!
+    freeWifiAvailable: Boolean
+    toilettsAvailable: Boolean
+    hygienePolicy: String
+    kidsWelcome: Boolean
+    petsWelcome: Boolean
   }
 
-  type ActivityAttendance implements Node {
+  type Attendance implements Node {
     id: ID!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -98,11 +115,16 @@ export const schema = gql`
   input ActivityInput {
     title: String
     description: String
-    venue: String
+    venueName: String
     geoLocation: String
     startsAt: DateTime
     endsAt: DateTime
-    barrierfree: Boolean
+    barrierFree: Boolean
     public: Boolean
+    freeWifiAvailable: Boolean
+    toilettsAvailable: Boolean
+    hygienePolicy: String
+    kidsWelcome: Boolean
+    petsWelcome: Boolean
   }
 `;

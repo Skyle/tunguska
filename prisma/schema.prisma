@@ -11,17 +11,17 @@ datasource db {
 }
 
 model UserDB {
-  id                String                 @id @default(cuid())
-  name              String                 @unique
+  id                String         @id @default(cuid())
+  name              String         @unique
   password          String
-  createdAt         DateTime               @default(now())
-  updatedAt         DateTime               @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
   lastVisitedAt     DateTime?
   createdActivities ActivityDB[]
-  joinedActivities  ActivityAttendanceDB[]
+  joinedActivities  AttendanceDB[]
 }
 
-model ActivityAttendanceDB {
+model AttendanceDB {
   id         String     @id @default(cuid())
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -29,21 +29,28 @@ model ActivityAttendanceDB {
   userId     String
   activity   ActivityDB @relation(fields: [activityId], references: [id])
   activityId String
+
+  @@unique([userId, activityId])
 }
 
 model ActivityDB {
-  id           String                 @id @default(cuid())
-  title        String?
-  description String?
-  createdAt    DateTime               @default(now())
-  updatedAt    DateTime               @updatedAt
-  createdBy    UserDB                 @relation(fields: [createdById], references: [id])
-  createdById  String
-  venue        String?
-  geoLocation  String?
-  startsAt     DateTime?
-  endsAt       DateTime?
-  barrierfree Boolean?
-  public       Boolean?
-  joinedBy     ActivityAttendanceDB[]
+  id                String         @id @default(cuid())
+  title             String?
+  description       String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  createdBy         UserDB         @relation(fields: [createdById], references: [id])
+  createdById       String
+  venueName         String?
+  geoLocation       String?
+  startsAt          DateTime?
+  endsAt            DateTime?
+  barrierFree       Boolean?
+  public            Boolean?
+  joinedBy          AttendanceDB[]
+  freeWifiAvailable Boolean?
+  toilettsAvailable Boolean?
+  hygienePolicy     String?
+  kidsWelcome       Boolean?
+  petsWelcome       Boolean?
 }

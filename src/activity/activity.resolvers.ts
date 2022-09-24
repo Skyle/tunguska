@@ -1,3 +1,4 @@
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
 import { userOrThrow } from "../auth/auth.services";
 import {
@@ -61,6 +62,37 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   } catch (error) {
     console.error(error);
     throw new Error("Activity could not be deleted");
+  }
+};
+
+export const joinActivity: MutationResolvers["joinActivity"] = async (
+  root,
+  { id },
+  ctx
+) => {
+  const verifiedUser = await userOrThrow(ctx);
+  const activity = await prisma.activityDB.findUnique({
+    where: { id },
+  });
+  if (!activity) throw new Error("Activity could not be found");
+  if (activity.public === false) throw new Error("Activity must be public");
+  try {
+    const attendance = await prisma.attendanceDB.create({
+      data: {
+        activity: { connect: { id: activity.id } },
+        user: { connect: { id: verifiedUser.id } },
+      },
+    });
+    return attendance;
+  } catch (error) {
+    console.error(error);
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw new Error("You already joined this Activity");
+    }
+    throw new Error("Activity could not be joined");
   }
 };
 
