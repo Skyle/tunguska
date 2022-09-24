@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
-import { userOrThrow } from "../auth/auth.services";
+import { verifyUser, verifyUserOrUnauthorized } from "../auth/auth.services";
 import {
   ActivityResolvers,
   MutationResolvers,
@@ -14,6 +14,7 @@ export const activities: QueryResolvers["activities"] = async (
   args,
   ctx
 ) => {
+  const user = await verifyUser(ctx);
   return await prisma.activityDB.findMany({
     where: { public: true },
     take: args.limit ?? 10,
@@ -29,7 +30,7 @@ export const createActivity: MutationResolvers["createActivity"] = async (
   { activityInput },
   ctx
 ) => {
-  const verifiedUser = await userOrThrow(ctx);
+  const verifiedUser = await verifyUserOrUnauthorized(ctx);
   try {
     return await prisma.activityDB.create({
       data: {
@@ -48,7 +49,7 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await userOrThrow(ctx);
+  const verifiedUser = await verifyUserOrUnauthorized(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -70,7 +71,7 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
   { id, activityInput },
   ctx
 ) => {
-  const verifiedUser = await userOrThrow(ctx);
+  const verifiedUser = await verifyUserOrUnauthorized(ctx);
   const activityToUpdate = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -93,7 +94,7 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await userOrThrow(ctx);
+  const verifiedUser = await verifyUserOrUnauthorized(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -127,7 +128,7 @@ export const leaveActivity: MutationResolvers["leaveActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await userOrThrow(ctx);
+  const verifiedUser = await verifyUserOrUnauthorized(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
