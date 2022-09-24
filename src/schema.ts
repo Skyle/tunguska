@@ -52,11 +52,11 @@ export const schema = gql`
     """
     updateActivity(id: ID!, activityInput: ActivityInput!): Activity!
     """
-    join an activity
+    participate in an activity
     """
     joinActivity(id: ID!): Activity!
     """
-    leave an activity
+    do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
   }

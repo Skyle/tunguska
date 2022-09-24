@@ -77,9 +77,9 @@ export type Mutation = {
   deleteActivity: Scalars["String"];
   /** update an activity */
   updateActivity: Activity;
-  /** join an activity */
+  /** participate in an activity */
   joinActivity: Activity;
-  /** leave an activity */
+  /** do not participate in an activity */
   leaveActivity: Activity;
 };
 
