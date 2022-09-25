@@ -60,12 +60,18 @@ export type Query = {
   me: User;
   /** all public activities */
   activities: Array<Activity>;
+  /** a single public activity */
+  activity?: Maybe<Activity>;
 };
 
 export type QueryactivitiesArgs = {
   limit?: InputMaybe<Scalars["Float"]>;
   skip?: InputMaybe<Scalars["Float"]>;
   order?: InputMaybe<Order>;
+};
+
+export type QueryactivityArgs = {
+  id: Scalars["ID"];
 };
 
 export type Mutation = {
@@ -375,6 +381,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     Partial<QueryactivitiesArgs>
+  >;
+  activity?: Resolver<
+    Maybe<ResolversTypes["Activity"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryactivityArgs, "id">
   >;
 };
 

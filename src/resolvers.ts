@@ -1,6 +1,7 @@
 import { IResolvers } from "mercurius";
 import {
   activities,
+  activity,
   createActivity,
   createdBy,
   deleteActivity,
@@ -9,7 +10,10 @@ import {
   participations,
   updateActivity,
 } from "./activity/activity.resolvers";
-import { activity, user } from "./participation/participation.resolvers";
+import {
+  activityParticipationFieldResolver,
+  user,
+} from "./participation/participation.resolvers";
 import { signIn, signUp } from "./auth/auth.resolvers";
 import {
   createdActivities,
@@ -26,6 +30,7 @@ export const resolvers: IResolvers = {
     me: me,
     // activity
     activities: activities,
+    activity: activity,
   },
 
   Mutation: {
@@ -46,5 +51,5 @@ export const resolvers: IResolvers = {
     createdActivities: createdActivities,
     participatesIn: participatesIn,
   },
-  Participation: { user: user, activity: activity },
+  Participation: { user: user, activity: activityParticipationFieldResolver },
 };

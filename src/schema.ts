@@ -35,6 +35,10 @@ export const schema = gql`
     all public activities
     """
     activities(limit: Float, skip: Float, order: Order): [Activity!]!
+    """
+    a single public activity
+    """
+    activity(id: ID!): Activity
   }
 
   type Mutation {
