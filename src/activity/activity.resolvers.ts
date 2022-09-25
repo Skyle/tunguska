@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
-import { verifyUser, verifyUserOrUnauthorized } from "../auth/auth.services";
+import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
 import {
   ActivityResolvers,
   MutationResolvers,
@@ -30,7 +30,7 @@ export const createActivity: MutationResolvers["createActivity"] = async (
   { activityInput },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrUnauthorized(ctx);
+  const verifiedUser = await verifyUserOrThrow(ctx);
   try {
     return await prisma.activityDB.create({
       data: {
@@ -49,7 +49,7 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrUnauthorized(ctx);
+  const verifiedUser = await verifyUserOrThrow(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -71,7 +71,7 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
   { id, activityInput },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrUnauthorized(ctx);
+  const verifiedUser = await verifyUserOrThrow(ctx);
   const activityToUpdate = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -94,7 +94,7 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrUnauthorized(ctx);
+  const verifiedUser = await verifyUserOrThrow(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
@@ -128,7 +128,7 @@ export const leaveActivity: MutationResolvers["leaveActivity"] = async (
   { id },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrUnauthorized(ctx);
+  const verifiedUser = await verifyUserOrThrow(ctx);
   const activity = await prisma.activityDB.findUnique({
     where: { id },
   });
