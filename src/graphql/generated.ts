@@ -117,7 +117,7 @@ export type MutationleaveActivityArgs = {
 };
 
 export type MutationuploadImageArgs = {
-  file: Scalars["Upload"];
+  image: Scalars["Upload"];
 };
 
 export type User = Node & {
@@ -428,7 +428,7 @@ export type MutationResolvers<
     ResolversTypes["String"],
     ParentType,
     ContextType,
-    RequireFields<MutationuploadImageArgs, "file">
+    RequireFields<MutationuploadImageArgs, "image">
   >;
 };
 

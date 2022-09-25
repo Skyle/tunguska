@@ -66,7 +66,7 @@ export const schema = gql`
     do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
-    uploadImage(file: Upload!): String!
+    uploadImage(image: Upload!): String!
   }
 
   type User implements Node {
