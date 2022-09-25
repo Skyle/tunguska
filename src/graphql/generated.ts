@@ -33,6 +33,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Upload: any;
   DateTime: Date;
   JWT: string;
   _FieldSet: any;
@@ -53,7 +54,7 @@ export type Node = {
 
 export type Query = {
   __typename?: "Query";
-  /** all users */
+  /** all public users */
   users: Array<User>;
   /** currently logged in user (you) */
   me: User;
@@ -83,6 +84,7 @@ export type Mutation = {
   joinActivity: Activity;
   /** do not participate in an activity */
   leaveActivity: Activity;
+  uploadImage: Scalars["String"];
 };
 
 export type MutationsignUpArgs = {
@@ -114,6 +116,10 @@ export type MutationleaveActivityArgs = {
   id: Scalars["ID"];
 };
 
+export type MutationuploadImageArgs = {
+  file: Scalars["Upload"];
+};
+
 export type User = Node & {
   __typename?: "User";
   id: Scalars["ID"];
@@ -123,6 +129,7 @@ export type User = Node & {
   lastVisitedAt?: Maybe<Scalars["DateTime"]>;
   createdActivities: Array<Activity>;
   participatesIn: Array<Participation>;
+  public: Scalars["Boolean"];
 };
 
 export type Activity = Node & {
@@ -145,6 +152,7 @@ export type Activity = Node & {
   hygienePolicy?: Maybe<Scalars["String"]>;
   kidsWelcome?: Maybe<Scalars["Boolean"]>;
   petsWelcome?: Maybe<Scalars["Boolean"]>;
+  smokingAllowed?: Maybe<Scalars["Boolean"]>;
 };
 
 /** Participation is when a User takes part in an Activity */
@@ -181,6 +189,7 @@ export type ActivityInput = {
   hygienePolicy?: InputMaybe<Scalars["String"]>;
   kidsWelcome?: InputMaybe<Scalars["Boolean"]>;
   petsWelcome?: InputMaybe<Scalars["Boolean"]>;
+  smokingAllowed?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -283,6 +292,7 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Upload: ResolverTypeWrapper<Scalars["Upload"]>;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   JWT: ResolverTypeWrapper<Scalars["JWT"]>;
   Order: Order;
@@ -296,8 +306,8 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
-  Activity: ResolverTypeWrapper<Activity>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+  Activity: ResolverTypeWrapper<Activity>;
   Participation: ResolverTypeWrapper<Participation>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
@@ -305,6 +315,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Upload: Scalars["Upload"];
   DateTime: Scalars["DateTime"];
   JWT: Scalars["JWT"];
   Node:
@@ -317,12 +328,17 @@ export type ResolversParentTypes = {
   Mutation: {};
   String: Scalars["String"];
   User: User;
-  Activity: Activity;
   Boolean: Scalars["Boolean"];
+  Activity: Activity;
   Participation: Participation;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
+
+export interface UploadScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Upload"], any> {
+  name: "Upload";
+}
 
 export interface DateTimeScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
@@ -408,6 +424,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationleaveActivityArgs, "id">
   >;
+  uploadImage?: Resolver<
+    ResolversTypes["String"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationuploadImageArgs, "file">
+  >;
 };
 
 export type UserResolvers<
@@ -433,6 +455,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  public?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -502,6 +525,11 @@ export type ActivityResolvers<
     ParentType,
     ContextType
   >;
+  smokingAllowed?: Resolver<
+    Maybe<ResolversTypes["Boolean"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -518,6 +546,7 @@ export type ParticipationResolvers<
 };
 
 export type Resolvers<ContextType = MercuriusContext> = {
+  Upload?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
   Node?: NodeResolvers<ContextType>;
@@ -563,6 +592,7 @@ export interface Loaders<
     >;
     createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
     participatesIn?: LoaderResolver<Array<Participation>, User, {}, TContext>;
+    public?: LoaderResolver<Scalars["Boolean"], User, {}, TContext>;
   };
 
   Activity?: {
@@ -634,6 +664,12 @@ export interface Loaders<
       TContext
     >;
     petsWelcome?: LoaderResolver<
+      Maybe<Scalars["Boolean"]>,
+      Activity,
+      {},
+      TContext
+    >;
+    smokingAllowed?: LoaderResolver<
       Maybe<Scalars["Boolean"]>,
       Activity,
       {},

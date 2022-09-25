@@ -17,6 +17,7 @@ import {
   participatesIn,
   users,
 } from "./user/user.resolvers";
+import { uploadImage } from "./image/image.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -37,6 +38,8 @@ export const resolvers: IResolvers = {
     joinActivity: joinActivity,
     leaveActivity: leaveActivity,
     updateActivity: updateActivity,
+    //
+    uploadImage: uploadImage,
   },
   Activity: { createdBy: createdBy, participations: participations },
   User: {

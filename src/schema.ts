@@ -1,6 +1,7 @@
 import { gql } from "mercurius-codegen";
 
 export const schema = gql`
+  scalar Upload
   scalar DateTime
   scalar JWT
 
@@ -23,7 +24,7 @@ export const schema = gql`
 
   type Query {
     """
-    all users
+    all public users
     """
     users: [User!]!
     """
@@ -65,6 +66,7 @@ export const schema = gql`
     do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
+    uploadImage(file: Upload!): String!
   }
 
   type User implements Node {
@@ -75,6 +77,7 @@ export const schema = gql`
     lastVisitedAt: DateTime
     createdActivities: [Activity!]!
     participatesIn: [Participation!]!
+    public: Boolean!
   }
 
   type Activity implements Node {
@@ -96,6 +99,7 @@ export const schema = gql`
     hygienePolicy: String
     kidsWelcome: Boolean
     petsWelcome: Boolean
+    smokingAllowed: Boolean
   }
 
   """
@@ -136,5 +140,6 @@ export const schema = gql`
     hygienePolicy: String
     kidsWelcome: Boolean
     petsWelcome: Boolean
+    smokingAllowed: Boolean
   }
 `;

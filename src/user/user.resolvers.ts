@@ -4,7 +4,7 @@ import { QueryResolvers, UserResolvers } from "../graphql/generated";
 
 export const users: QueryResolvers["users"] = async (root, args, ctx) => {
   const verifiedUser = await verifyUserOrUnauthorized(ctx);
-  const users = await prisma.userDB.findMany();
+  const users = await prisma.userDB.findMany({ where: { public: true } });
   return users;
 };
 

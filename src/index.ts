@@ -2,6 +2,7 @@ import { PrismaClient, UserDB } from "@prisma/client";
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import mercurius from "mercurius";
 import mercuriusCodegen from "mercurius-codegen";
+import MercuriusGQLUpload from "mercurius-upload";
 import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import { schema } from "./schema";
@@ -15,6 +16,7 @@ app.register(jwt, {
   secret:
     "verynottopsecretpasswordjagarnichtsicherganzsicheraberdafuerlangundgutlesbarhaha",
 });
+app.register(MercuriusGQLUpload);
 
 const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
   return {
