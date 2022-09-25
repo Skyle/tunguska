@@ -14,11 +14,12 @@ export const user: ParticipationResolvers["user"] = async (root) => {
   return user;
 };
 
-export const activity: ParticipationResolvers["activity"] = async (root) => {
-  const activity = await prisma.participationDB
-    .findUnique({ where: { id: root.id } })
-    .activity();
+export const activityParticipationFieldResolver: ParticipationResolvers["activity"] =
+  async (root) => {
+    const activity = await prisma.participationDB
+      .findUnique({ where: { id: root.id } })
+      .activity();
 
-  if (!activity) throw new Error("Attendance should always have an activity");
-  return activity;
-};
+    if (!activity) throw new Error("Attendance should always have an activity");
+    return activity;
+  };

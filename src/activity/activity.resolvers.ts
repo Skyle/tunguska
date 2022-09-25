@@ -23,11 +23,7 @@ export const activities: QueryResolvers["activities"] = async (
   });
 };
 
-export const activitiy: QueryResolvers["activity"] = async (
-  root,
-  args,
-  ctx
-) => {
+export const activity: QueryResolvers["activity"] = async (root, args, ctx) => {
   const user = await verifyUser(ctx);
   return await prisma.activityDB.findUnique({
     where: { id: args.id },
