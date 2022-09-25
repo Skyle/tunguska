@@ -90,7 +90,7 @@ export type Mutation = {
   joinActivity: Activity;
   /** do not participate in an activity */
   leaveActivity: Activity;
-  uploadImage: Scalars["String"];
+  uploadImage: Image;
 };
 
 export type MutationsignUpArgs = {
@@ -169,6 +169,15 @@ export type Participation = Node & {
   updatedAt: Scalars["DateTime"];
   user: User;
   activity: Activity;
+};
+
+export type Image = Node & {
+  __typename?: "Image";
+  id: Scalars["ID"];
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
+  createdBy: User;
+  uploadCompleted: Scalars["Boolean"];
 };
 
 export type NamePasswordInput = {
@@ -305,7 +314,8 @@ export type ResolversTypes = {
   Node:
     | ResolversTypes["User"]
     | ResolversTypes["Activity"]
-    | ResolversTypes["Participation"];
+    | ResolversTypes["Participation"]
+    | ResolversTypes["Image"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
@@ -315,6 +325,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Activity: ResolverTypeWrapper<Activity>;
   Participation: ResolverTypeWrapper<Participation>;
+  Image: ResolverTypeWrapper<Image>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -327,7 +338,8 @@ export type ResolversParentTypes = {
   Node:
     | ResolversParentTypes["User"]
     | ResolversParentTypes["Activity"]
-    | ResolversParentTypes["Participation"];
+    | ResolversParentTypes["Participation"]
+    | ResolversParentTypes["Image"];
   ID: Scalars["ID"];
   Query: {};
   Float: Scalars["Float"];
@@ -337,6 +349,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars["Boolean"];
   Activity: Activity;
   Participation: Participation;
+  Image: Image;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -361,7 +374,7 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = {
   resolveType: TypeResolveFn<
-    "User" | "Activity" | "Participation",
+    "User" | "Activity" | "Participation" | "Image",
     ParentType,
     ContextType
   >;
@@ -437,7 +450,7 @@ export type MutationResolvers<
     RequireFields<MutationleaveActivityArgs, "id">
   >;
   uploadImage?: Resolver<
-    ResolversTypes["String"],
+    ResolversTypes["Image"],
     ParentType,
     ContextType,
     RequireFields<MutationuploadImageArgs, "image">
@@ -557,6 +570,22 @@ export type ParticipationResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ImageResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["Image"] = ResolversParentTypes["Image"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  uploadCompleted?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType
+  >;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   Upload?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
@@ -567,6 +596,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   User?: UserResolvers<ContextType>;
   Activity?: ActivityResolvers<ContextType>;
   Participation?: ParticipationResolvers<ContextType>;
+  Image?: ImageResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (
@@ -705,6 +735,14 @@ export interface Loaders<
     >;
     user?: LoaderResolver<User, Participation, {}, TContext>;
     activity?: LoaderResolver<Activity, Participation, {}, TContext>;
+  };
+
+  Image?: {
+    id?: LoaderResolver<Scalars["ID"], Image, {}, TContext>;
+    createdAt?: LoaderResolver<Scalars["DateTime"], Image, {}, TContext>;
+    updatedAt?: LoaderResolver<Scalars["DateTime"], Image, {}, TContext>;
+    createdBy?: LoaderResolver<User, Image, {}, TContext>;
+    uploadCompleted?: LoaderResolver<Scalars["Boolean"], Image, {}, TContext>;
   };
 }
 declare module "mercurius" {

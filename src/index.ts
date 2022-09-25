@@ -7,6 +7,7 @@ import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import { schema } from "./schema";
 import { resolvers } from "./resolvers";
+import { readFile } from "fs/promises";
 
 export const prisma = new PrismaClient();
 
@@ -24,6 +25,17 @@ const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
     user: null,
   };
 };
+
+app.route<{ Params: { imageName: string } }>({
+  url: "/files/images/:imageName",
+  method: "GET",
+  handler: async (req, rep) => {
+    const { imageName } = req.params;
+    const stream = await readFile("./files/images/" + imageName);
+    console.log(imageName);
+    rep.send(stream);
+  },
+});
 
 app.register(mercurius, {
   schema: schema,

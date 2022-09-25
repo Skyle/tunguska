@@ -63,11 +63,12 @@ model ActivityDB {
 }
 
 model ImageDB {
-  id          String      @id @default(cuid())
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  createdBy   UserDB      @relation(fields: [createdById], references: [id])
-  createdById String
-  activity    ActivityDB?
-  profile     UserDB?     @relation(name: "ProfileImage")
+  id              String      @id @default(cuid())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  createdBy       UserDB      @relation(fields: [createdById], references: [id])
+  createdById     String
+  activity        ActivityDB?
+  profile         UserDB?     @relation(name: "ProfileImage")
+  uploadCompleted Boolean    @default(false)
 }

@@ -70,7 +70,7 @@ export const schema = gql`
     do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
-    uploadImage(image: Upload!): String!
+    uploadImage(image: Upload!): Image!
   }
 
   type User implements Node {
@@ -115,6 +115,14 @@ export const schema = gql`
     updatedAt: DateTime!
     user: User!
     activity: Activity!
+  }
+
+  type Image implements Node {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    createdBy: User!
+    uploadCompleted: Boolean!
   }
 
   input NamePasswordInput {

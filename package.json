@@ -5,7 +5,7 @@
     "reload": "pm2 stop tunguska && git pull && npm i && npm run db && npm run build  && pm2 start tunguska",
     "build": "tsc",
     "db": "npx prisma migrate dev",
-    "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
+    "dev": "tsc -w & nodemon dist/index.js"
   },
   "author": "Philipp Friedrich",
   "license": "ISC",
@@ -18,10 +18,12 @@
     "graphql": "^16.6.0",
     "mercurius": "^10.0.0",
     "mercurius-codegen": "^4.0.1",
-    "mercurius-upload": "^5.0.0"
+    "mercurius-upload": "^5.0.0",
+    "sharp": "^0.31.0"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
+    "@types/sharp": "^0.31.0",
     "concurrently": "^7.4.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
