@@ -32,7 +32,6 @@ app.route<{ Params: { imageName: string } }>({
   handler: async (req, rep) => {
     const { imageName } = req.params;
     const stream = await readFile("./files/images/" + imageName);
-    console.log(imageName);
     rep.send(stream);
   },
 });
