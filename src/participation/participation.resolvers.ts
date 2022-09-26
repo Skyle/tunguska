@@ -5,14 +5,15 @@ import { ParticipationResolvers } from "../graphql/generated";
 
 // FieldResolvers
 
-export const user: ParticipationResolvers["user"] = async (root) => {
-  const user = await prisma.participationDB
-    .findUnique({ where: { id: root.id } })
-    .user();
+export const userParticipationFieldResolver: ParticipationResolvers["user"] =
+  async (root) => {
+    const user = await prisma.participationDB
+      .findUnique({ where: { id: root.id } })
+      .user();
 
-  if (!user) throw new Error("Attendance should always have a user");
-  return user;
-};
+    if (!user) throw new Error("Attendance should always have a user");
+    return user;
+  };
 
 export const activityParticipationFieldResolver: ParticipationResolvers["activity"] =
   async (root) => {

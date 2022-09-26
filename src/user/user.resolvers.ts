@@ -1,6 +1,14 @@
 import { prisma } from "..";
-import { verifyUserOrThrow } from "../auth/auth.services";
+import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
 import { QueryResolvers, UserResolvers } from "../graphql/generated";
+
+export const user: QueryResolvers["user"] = async (root, args, ctx) => {
+  const authUser = await verifyUser(ctx);
+  const requestedUser = await prisma.userDB.findUnique({
+    where: { id: args.id },
+  });
+  return requestedUser;
+};
 
 export const users: QueryResolvers["users"] = async (root, args, ctx) => {
   const verifiedUser = await verifyUserOrThrow(ctx);

@@ -27,6 +27,10 @@ export const schema = gql`
     """
     users: [User!]!
     """
+    a single User by ID
+    """
+    user(id: ID!): User
+    """
     currently logged in user (you)
     """
     me: User!
