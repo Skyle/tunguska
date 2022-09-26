@@ -56,12 +56,18 @@ export type Query = {
   __typename?: "Query";
   /** all public users */
   users: Array<User>;
+  /** a single User by ID */
+  user?: Maybe<User>;
   /** currently logged in user (you) */
   me: User;
   /** all public activities */
   activities: Array<Activity>;
   /** a single public activity */
   activity?: Maybe<Activity>;
+};
+
+export type QueryuserArgs = {
+  id: Scalars["ID"];
 };
 
 export type QueryactivitiesArgs = {
@@ -388,6 +394,12 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
 > = {
   users?: Resolver<Array<ResolversTypes["User"]>, ParentType, ContextType>;
+  user?: Resolver<
+    Maybe<ResolversTypes["User"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryuserArgs, "id">
+  >;
   me?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   activities?: Resolver<
     Array<ResolversTypes["Activity"]>,

@@ -12,13 +12,14 @@ import {
 } from "./activity/activity.resolvers";
 import {
   activityParticipationFieldResolver,
-  user,
+  userParticipationFieldResolver,
 } from "./participation/participation.resolvers";
 import { signIn, signUp } from "./auth/auth.resolvers";
 import {
   createdActivities,
   me,
   participatesIn,
+  user,
   users,
 } from "./user/user.resolvers";
 import { uploadImage } from "./image/image.resolvers";
@@ -26,6 +27,7 @@ import { uploadImage } from "./image/image.resolvers";
 export const resolvers: IResolvers = {
   Query: {
     // user
+    user: user,
     users: users,
     me: me,
     // activity
@@ -51,5 +53,8 @@ export const resolvers: IResolvers = {
     createdActivities: createdActivities,
     participatesIn: participatesIn,
   },
-  Participation: { user: user, activity: activityParticipationFieldResolver },
+  Participation: {
+    user: userParticipationFieldResolver,
+    activity: activityParticipationFieldResolver,
+  },
 };
