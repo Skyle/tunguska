@@ -12,8 +12,6 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
   { image },
   ctx
 ) => {
-  const verifiedUser = await verifyUserOrThrow(ctx);
-
   const { file } = await image;
   const { createReadStream } = file;
   const rs: ReadStream = createReadStream();
@@ -22,14 +20,27 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
     chunks.push(chunk);
   }
   const imageBuffer = Buffer.concat(chunks);
+  const verifiedUser = await verifyUserOrThrow(ctx);
+
   try {
     const newImage = await prisma.imageDB.create({
       data: { createdBy: { connect: { id: verifiedUser.id } } },
     });
+
     await sharp(imageBuffer)
       .resize(1920, 1920, { fit: "inside" })
       .webp()
       .toFile(path.join(uploadsDir, newImage.id + "_large.webp"));
+
+    sharp(imageBuffer)
+      .resize(1280, 1280, { fit: "inside" })
+      .webp()
+      .toFile(path.join(uploadsDir, newImage.id + "_normal.webp"));
+
+    sharp(imageBuffer)
+      .resize(640, 640, { fit: "inside" })
+      .webp()
+      .toFile(path.join(uploadsDir, newImage.id + "_small.webp"));
 
     const updatedImage = await prisma.imageDB.update({
       where: { id: newImage.id },
@@ -38,7 +49,6 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
     return updatedImage;
   } catch (error) {
     console.error(error);
-    rs.destroy();
     throw new Error("could not upload image");
   }
 };
