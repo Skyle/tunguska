@@ -18,7 +18,7 @@ model UserDB {
   updatedAt         DateTime          @updatedAt
   lastVisitedAt     DateTime?
   createdActivities ActivityDB[]
-  participatesIn    ParticipationDB[]
+  participations    ParticipationDB[]
   createdImages     ImageDB[]
   public            Boolean           @default(true)
   profileImage      ImageDB?          @relation(fields: [profileImageId], references: [id], name: "ProfileImage")

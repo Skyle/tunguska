@@ -148,7 +148,7 @@ export type User = Node & {
   updatedAt: Scalars["DateTime"];
   lastVisitedAt?: Maybe<Scalars["DateTime"]>;
   createdActivities: Array<Activity>;
-  participatesIn: Array<Participation>;
+  participations: Array<Participation>;
   createdImages: Array<Image>;
   public: Scalars["Boolean"];
   profileImage?: Maybe<Image>;
@@ -508,7 +508,7 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
-  participatesIn?: Resolver<
+  participations?: Resolver<
     Array<ResolversTypes["Participation"]>,
     ParentType,
     ContextType
@@ -688,7 +688,7 @@ export interface Loaders<
       TContext
     >;
     createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
-    participatesIn?: LoaderResolver<Array<Participation>, User, {}, TContext>;
+    participations?: LoaderResolver<Array<Participation>, User, {}, TContext>;
     createdImages?: LoaderResolver<Array<Image>, User, {}, TContext>;
     public?: LoaderResolver<Scalars["Boolean"], User, {}, TContext>;
     profileImage?: LoaderResolver<Maybe<Image>, User, {}, TContext>;

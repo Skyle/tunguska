@@ -20,7 +20,7 @@ import {
   createdActivities,
   createdImages,
   me,
-  participatesIn,
+  participationsUserFieldResolver,
   profileImage,
   updateUser,
   user,
@@ -65,7 +65,7 @@ export const resolvers: IResolvers = {
   },
   User: {
     createdActivities: createdActivities,
-    participatesIn: participatesIn,
+    participations: participationsUserFieldResolver,
     profileImage: profileImage,
     createdImages: createdImages,
   },

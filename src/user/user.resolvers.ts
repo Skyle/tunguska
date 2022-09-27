@@ -72,12 +72,13 @@ export const createdActivities: UserResolvers["createdActivities"] = async (
   }
 };
 
-export const participatesIn: UserResolvers["participatesIn"] = async (root) => {
-  const activities = await prisma.userDB
-    .findUnique({ where: { id: root.id } })
-    .participatesIn();
-  return activities;
-};
+export const participationsUserFieldResolver: UserResolvers["participations"] =
+  async (root) => {
+    const participations = await prisma.userDB
+      .findUnique({ where: { id: root.id } })
+      .participations();
+    return participations;
+  };
 
 export const profileImage: UserResolvers["profileImage"] = async (root) => {
   const profileImageFromDB = await prisma.userDB
