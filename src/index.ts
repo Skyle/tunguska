@@ -30,17 +30,22 @@ app.route<{ Params: { imageName: string } }>({
   url: "/files/images/:imageName",
   method: "GET",
   handler: async (req, rep) => {
-    const { imageName } = req.params;
-    // separate imageName by underscore
-    const [id, endung] = imageName.split("_");
+    try {
+      const { imageName } = req.params;
+      // separate imageName by underscore
+      const [id, endung] = imageName.split("_");
 
-    const imageFromDB = await prisma.imageDB.findUnique({
-      where: { id: id },
-      include: { activity: true },
-    });
-    if (imageFromDB) {
-      const stream = await readFile("./files/images/" + imageName);
-      rep.send(stream);
+      const imageFromDB = await prisma.imageDB.findUnique({
+        where: { id: id },
+        include: { activity: true },
+      });
+      if (imageFromDB) {
+        const stream = await readFile("./files/images/" + imageName);
+        rep.send(stream);
+      }
+    } catch (error) {
+      console.error("error", error);
+      throw new Error("could not find image");
     }
   },
 });

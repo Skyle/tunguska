@@ -23,6 +23,7 @@ model UserDB {
   public            Boolean           @default(true)
   profileImage      ImageDB?          @relation(fields: [profileImageId], references: [id], name: "ProfileImage")
   profileImageId    String?           @unique
+  selfDescription   String?
 }
 
 model ParticipationDB {

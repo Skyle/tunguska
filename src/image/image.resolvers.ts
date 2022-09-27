@@ -32,12 +32,12 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
       .webp()
       .toFile(path.join(uploadsDir, newImage.id + "_large.webp"));
 
-    sharp(imageBuffer)
+    await sharp(imageBuffer)
       .resize(1280, 1280, { fit: "inside" })
       .webp()
       .toFile(path.join(uploadsDir, newImage.id + "_normal.webp"));
 
-    sharp(imageBuffer)
+    await sharp(imageBuffer)
       .resize(640, 640, { fit: "inside" })
       .webp()
       .toFile(path.join(uploadsDir, newImage.id + "_small.webp"));

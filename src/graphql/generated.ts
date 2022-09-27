@@ -33,9 +33,9 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Upload: any;
   DateTime: Date;
   JWT: string;
+  Upload: any;
   _FieldSet: any;
 };
 
@@ -97,6 +97,7 @@ export type Mutation = {
   /** do not participate in an activity */
   leaveActivity: Activity;
   uploadImage: Image;
+  updateUser: User;
 };
 
 export type MutationsignUpArgs = {
@@ -132,6 +133,11 @@ export type MutationuploadImageArgs = {
   image: Scalars["Upload"];
 };
 
+export type MutationupdateUserArgs = {
+  imageId?: InputMaybe<Scalars["ID"]>;
+  selfDescription?: InputMaybe<Scalars["String"]>;
+};
+
 export type User = Node & {
   __typename?: "User";
   id: Scalars["ID"];
@@ -142,6 +148,7 @@ export type User = Node & {
   createdActivities: Array<Activity>;
   participatesIn: Array<Participation>;
   public: Scalars["Boolean"];
+  profileImage?: Maybe<Image>;
 };
 
 export type Activity = Node & {
@@ -313,9 +320,9 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Upload: ResolverTypeWrapper<Scalars["Upload"]>;
   DateTime: ResolverTypeWrapper<Scalars["DateTime"]>;
   JWT: ResolverTypeWrapper<Scalars["JWT"]>;
+  Upload: ResolverTypeWrapper<Scalars["Upload"]>;
   Order: Order;
   Node:
     | ResolversTypes["User"]
@@ -338,9 +345,9 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Upload: Scalars["Upload"];
   DateTime: Scalars["DateTime"];
   JWT: Scalars["JWT"];
+  Upload: Scalars["Upload"];
   Node:
     | ResolversParentTypes["User"]
     | ResolversParentTypes["Activity"]
@@ -360,11 +367,6 @@ export type ResolversParentTypes = {
   ActivityInput: ActivityInput;
 };
 
-export interface UploadScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes["Upload"], any> {
-  name: "Upload";
-}
-
 export interface DateTimeScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes["DateTime"], any> {
   name: "DateTime";
@@ -373,6 +375,11 @@ export interface DateTimeScalarConfig
 export interface JWTScalarConfig
   extends GraphQLScalarTypeConfig<ResolversTypes["JWT"], any> {
   name: "JWT";
+}
+
+export interface UploadScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes["Upload"], any> {
+  name: "Upload";
 }
 
 export type NodeResolvers<
@@ -467,6 +474,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationuploadImageArgs, "image">
   >;
+  updateUser?: Resolver<
+    ResolversTypes["User"],
+    ParentType,
+    ContextType,
+    Partial<MutationupdateUserArgs>
+  >;
 };
 
 export type UserResolvers<
@@ -493,6 +506,11 @@ export type UserResolvers<
     ContextType
   >;
   public?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  profileImage?: Resolver<
+    Maybe<ResolversTypes["Image"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -599,9 +617,9 @@ export type ImageResolvers<
 };
 
 export type Resolvers<ContextType = MercuriusContext> = {
-  Upload?: GraphQLScalarType;
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
+  Upload?: GraphQLScalarType;
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -647,6 +665,7 @@ export interface Loaders<
     createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
     participatesIn?: LoaderResolver<Array<Participation>, User, {}, TContext>;
     public?: LoaderResolver<Scalars["Boolean"], User, {}, TContext>;
+    profileImage?: LoaderResolver<Maybe<Image>, User, {}, TContext>;
   };
 
   Activity?: {

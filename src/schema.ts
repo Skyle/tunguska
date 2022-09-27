@@ -1,9 +1,9 @@
 import { gql } from "mercurius-codegen";
 
 export const schema = gql`
-  scalar Upload
   scalar DateTime
   scalar JWT
+  scalar Upload
 
   enum Order {
     """
@@ -75,6 +75,7 @@ export const schema = gql`
     """
     leaveActivity(id: ID!): Activity!
     uploadImage(image: Upload!): Image!
+    updateUser(imageId: ID, selfDescription: String): User!
   }
 
   type User implements Node {
@@ -86,6 +87,7 @@ export const schema = gql`
     createdActivities: [Activity!]!
     participatesIn: [Participation!]!
     public: Boolean!
+    profileImage: Image
   }
 
   type Activity implements Node {
