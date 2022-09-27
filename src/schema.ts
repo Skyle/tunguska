@@ -74,8 +74,14 @@ export const schema = gql`
     do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
+    """
+    upload an image file as multipart/form-data and get an image back
+    """
     uploadImage(image: Upload!): Image!
-    updateUser(imageId: ID, selfDescription: String): User!
+    """
+    update an user
+    """
+    updateUser(imageId: String, selfDescription: String): User!
   }
 
   type User implements Node {
@@ -112,6 +118,7 @@ export const schema = gql`
     kidsWelcome: Boolean
     petsWelcome: Boolean
     smokingAllowed: Boolean
+    image: Image
   }
 
   """
@@ -131,6 +138,8 @@ export const schema = gql`
     updatedAt: DateTime!
     createdBy: User!
     uploadCompleted: Boolean!
+    user: User
+    activity: Activity
   }
 
   input NamePasswordInput {
@@ -161,5 +170,6 @@ export const schema = gql`
     kidsWelcome: Boolean
     petsWelcome: Boolean
     smokingAllowed: Boolean
+    imageId: String
   }
 `;

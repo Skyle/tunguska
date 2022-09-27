@@ -42,7 +42,11 @@ export const createActivity: MutationResolvers["createActivity"] = async (
     return await prisma.activityDB.create({
       data: {
         ...activityInput,
+        imageId: undefined,
         createdBy: { connect: { id: verifiedUser.id } },
+        image: activityInput.imageId
+          ? { connect: { id: activityInput.imageId } }
+          : undefined,
       },
     });
   } catch (error) {
@@ -88,11 +92,19 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
   if (activityToUpdate.createdById !== verifiedUser.id) {
     throw new Error("foreign Activities can not be updated");
   }
+  console.log(activityInput);
 
   const updatedActivity = await prisma.activityDB.update({
     where: { id },
-    data: { ...activityInput },
+    data: {
+      ...activityInput,
+      imageId: undefined,
+      image: activityInput.imageId
+        ? { connect: { id: activityInput.imageId } }
+        : undefined,
+    },
   });
+
   return updatedActivity;
 };
 
@@ -183,4 +195,13 @@ export const participations: ActivityResolvers["participations"] = async (
     .findUnique({ where: { id: root.id } })
     .participations();
   return users;
+};
+
+export const imageActivityFieldResolver: ActivityResolvers["image"] = async (
+  root
+) => {
+  const image = await prisma.activityDB
+    .findUnique({ where: { id: root.id } })
+    .image();
+  return image;
 };

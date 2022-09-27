@@ -44,7 +44,7 @@ app.route<{ Params: { imageName: string } }>({
 
       const imageFromDB = await prisma.imageDB.findUnique({
         where: { id: id },
-        include: { activity: true, profile: true },
+        include: { activity: true, user: true },
       });
       if (imageFromDB) {
         const stream = await readFile("./files/images/" + imageName);

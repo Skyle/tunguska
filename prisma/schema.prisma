@@ -70,6 +70,6 @@ model ImageDB {
   createdBy       UserDB      @relation(fields: [createdById], references: [id])
   createdById     String
   activity        ActivityDB?
-  profile         UserDB?     @relation(name: "ProfileImage")
-  uploadCompleted Boolean    @default(false)
+  user            UserDB?     @relation(name: "ProfileImage")
+  uploadCompleted Boolean     @default(false)
 }

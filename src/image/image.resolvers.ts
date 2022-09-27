@@ -64,3 +64,10 @@ export const createdByImageFieldResolver: ImageResolvers["createdBy"] = async (
   if (!user) throw new Error("Activity should always have a creator");
   return user;
 };
+
+export const userImageFieldResolver: ImageResolvers["user"] = async (root) => {
+  const user = await prisma.imageDB
+    .findUnique({ where: { id: root.id } })
+    .user();
+  return user;
+};

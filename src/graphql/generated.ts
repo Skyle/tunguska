@@ -96,7 +96,9 @@ export type Mutation = {
   joinActivity: Activity;
   /** do not participate in an activity */
   leaveActivity: Activity;
+  /** upload an image file as multipart/form-data and get an image back */
   uploadImage: Image;
+  /** update an user */
   updateUser: User;
 };
 
@@ -134,7 +136,7 @@ export type MutationuploadImageArgs = {
 };
 
 export type MutationupdateUserArgs = {
-  imageId?: InputMaybe<Scalars["ID"]>;
+  imageId?: InputMaybe<Scalars["String"]>;
   selfDescription?: InputMaybe<Scalars["String"]>;
 };
 
@@ -174,6 +176,7 @@ export type Activity = Node & {
   kidsWelcome?: Maybe<Scalars["Boolean"]>;
   petsWelcome?: Maybe<Scalars["Boolean"]>;
   smokingAllowed?: Maybe<Scalars["Boolean"]>;
+  image?: Maybe<Image>;
 };
 
 /** Participation is when a User takes part in an Activity */
@@ -193,6 +196,8 @@ export type Image = Node & {
   updatedAt: Scalars["DateTime"];
   createdBy: User;
   uploadCompleted: Scalars["Boolean"];
+  user?: Maybe<User>;
+  activity?: Maybe<Activity>;
 };
 
 export type NamePasswordInput = {
@@ -220,6 +225,7 @@ export type ActivityInput = {
   kidsWelcome?: InputMaybe<Scalars["Boolean"]>;
   petsWelcome?: InputMaybe<Scalars["Boolean"]>;
   smokingAllowed?: InputMaybe<Scalars["Boolean"]>;
+  imageId?: InputMaybe<Scalars["String"]>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -597,6 +603,7 @@ export type ActivityResolvers<
     ParentType,
     ContextType
   >;
+  image?: Resolver<Maybe<ResolversTypes["Image"]>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -622,6 +629,12 @@ export type ImageResolvers<
   createdBy?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   uploadCompleted?: Resolver<
     ResolversTypes["Boolean"],
+    ParentType,
+    ContextType
+  >;
+  user?: Resolver<Maybe<ResolversTypes["User"]>, ParentType, ContextType>;
+  activity?: Resolver<
+    Maybe<ResolversTypes["Activity"]>,
     ParentType,
     ContextType
   >;
@@ -767,6 +780,7 @@ export interface Loaders<
       {},
       TContext
     >;
+    image?: LoaderResolver<Maybe<Image>, Activity, {}, TContext>;
   };
 
   Participation?: {
@@ -793,6 +807,8 @@ export interface Loaders<
     updatedAt?: LoaderResolver<Scalars["DateTime"], Image, {}, TContext>;
     createdBy?: LoaderResolver<User, Image, {}, TContext>;
     uploadCompleted?: LoaderResolver<Scalars["Boolean"], Image, {}, TContext>;
+    user?: LoaderResolver<Maybe<User>, Image, {}, TContext>;
+    activity?: LoaderResolver<Maybe<Activity>, Image, {}, TContext>;
   };
 }
 declare module "mercurius" {

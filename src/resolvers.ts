@@ -5,6 +5,7 @@ import {
   createActivity,
   createdBy,
   deleteActivity,
+  imageActivityFieldResolver,
   joinActivity,
   leaveActivity,
   participations,
@@ -28,6 +29,7 @@ import {
 import {
   createdByImageFieldResolver,
   uploadImage,
+  userImageFieldResolver,
 } from "./image/image.resolvers";
 
 export const resolvers: IResolvers = {
@@ -56,7 +58,11 @@ export const resolvers: IResolvers = {
     // user
     updateUser: updateUser,
   },
-  Activity: { createdBy: createdBy, participations: participations },
+  Activity: {
+    createdBy: createdBy,
+    participations: participations,
+    image: imageActivityFieldResolver,
+  },
   User: {
     createdActivities: createdActivities,
     participatesIn: participatesIn,
@@ -69,5 +75,6 @@ export const resolvers: IResolvers = {
   },
   Image: {
     createdBy: createdByImageFieldResolver,
+    user: userImageFieldResolver,
   },
 };
