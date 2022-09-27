@@ -17,6 +17,7 @@ import {
 import { signIn, signUp } from "./auth/auth.resolvers";
 import {
   createdActivities,
+  createdImages,
   me,
   participatesIn,
   profileImage,
@@ -24,7 +25,10 @@ import {
   user,
   users,
 } from "./user/user.resolvers";
-import { uploadImage } from "./image/image.resolvers";
+import {
+  createdByImageFieldResolver,
+  uploadImage,
+} from "./image/image.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -57,9 +61,13 @@ export const resolvers: IResolvers = {
     createdActivities: createdActivities,
     participatesIn: participatesIn,
     profileImage: profileImage,
+    createdImages: createdImages,
   },
   Participation: {
     user: userParticipationFieldResolver,
     activity: activityParticipationFieldResolver,
+  },
+  Image: {
+    createdBy: createdByImageFieldResolver,
   },
 };

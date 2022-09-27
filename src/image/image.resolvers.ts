@@ -2,7 +2,7 @@ import { createWriteStream, ReadStream } from "fs";
 import path from "path";
 import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
-import { MutationResolvers } from "../graphql/generated";
+import { ImageResolvers, MutationResolvers } from "../graphql/generated";
 import sharp from "sharp";
 
 const uploadsDir = path.resolve("./files/images");
@@ -51,4 +51,16 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
     console.error(error);
     throw new Error("could not upload image");
   }
+};
+
+// FieldResolvers
+
+export const createdByImageFieldResolver: ImageResolvers["createdBy"] = async (
+  root
+) => {
+  const user = await prisma.imageDB
+    .findUnique({ where: { id: root.id } })
+    .createdBy();
+  if (!user) throw new Error("Activity should always have a creator");
+  return user;
 };

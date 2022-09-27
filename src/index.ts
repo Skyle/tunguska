@@ -34,10 +34,17 @@ app.route<{ Params: { imageName: string } }>({
       const { imageName } = req.params;
       // separate imageName by underscore
       const [id, endung] = imageName.split("_");
+      let user = null;
+      if (req.headers.authorization?.split(" ")[1]) {
+        const verified = app.jwt.verify(
+          req.headers.authorization?.split(" ")[1]
+        );
+        console.log(verified);
+      }
 
       const imageFromDB = await prisma.imageDB.findUnique({
         where: { id: id },
-        include: { activity: true },
+        include: { activity: true, profile: true },
       });
       if (imageFromDB) {
         const stream = await readFile("./files/images/" + imageName);

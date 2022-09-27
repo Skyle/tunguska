@@ -80,10 +80,15 @@ export const participatesIn: UserResolvers["participatesIn"] = async (root) => {
 };
 
 export const profileImage: UserResolvers["profileImage"] = async (root) => {
-  console.log("profle");
-
   const profileImageFromDB = await prisma.userDB
     .findUnique({ where: { id: root.id } })
     .profileImage();
   return profileImageFromDB;
+};
+
+export const createdImages: UserResolvers["createdImages"] = async (root) => {
+  const createdImagesForUser = await prisma.userDB
+    .findUnique({ where: { id: root.id } })
+    .createdImages();
+  return createdImagesForUser;
 };

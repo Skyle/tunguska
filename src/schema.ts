@@ -86,8 +86,10 @@ export const schema = gql`
     lastVisitedAt: DateTime
     createdActivities: [Activity!]!
     participatesIn: [Participation!]!
+    createdImages: [Image!]!
     public: Boolean!
     profileImage: Image
+    selfDescription: String
   }
 
   type Activity implements Node {
