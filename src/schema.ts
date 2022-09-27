@@ -3,6 +3,7 @@ import { gql } from "mercurius-codegen";
 export const schema = gql`
   scalar DateTime
   scalar JWT
+  scalar Upload
 
   enum Order {
     """
@@ -23,7 +24,7 @@ export const schema = gql`
 
   type Query {
     """
-    all users
+    all public users
     """
     users: [User!]!
     """
@@ -73,6 +74,8 @@ export const schema = gql`
     do not participate in an activity
     """
     leaveActivity(id: ID!): Activity!
+    uploadImage(image: Upload!): Image!
+    updateUser(imageId: ID, selfDescription: String): User!
   }
 
   type User implements Node {
@@ -83,6 +86,8 @@ export const schema = gql`
     lastVisitedAt: DateTime
     createdActivities: [Activity!]!
     participatesIn: [Participation!]!
+    public: Boolean!
+    profileImage: Image
   }
 
   type Activity implements Node {
@@ -104,6 +109,7 @@ export const schema = gql`
     hygienePolicy: String
     kidsWelcome: Boolean
     petsWelcome: Boolean
+    smokingAllowed: Boolean
   }
 
   """
@@ -115,6 +121,14 @@ export const schema = gql`
     updatedAt: DateTime!
     user: User!
     activity: Activity!
+  }
+
+  type Image implements Node {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    createdBy: User!
+    uploadCompleted: Boolean!
   }
 
   input NamePasswordInput {
@@ -144,5 +158,6 @@ export const schema = gql`
     hygienePolicy: String
     kidsWelcome: Boolean
     petsWelcome: Boolean
+    smokingAllowed: Boolean
   }
 `;

@@ -19,6 +19,11 @@ model UserDB {
   lastVisitedAt     DateTime?
   createdActivities ActivityDB[]
   participatesIn    ParticipationDB[]
+  createdImages     ImageDB[]
+  public            Boolean           @default(true)
+  profileImage      ImageDB?          @relation(fields: [profileImageId], references: [id], name: "ProfileImage")
+  profileImageId    String?           @unique
+  selfDescription   String?
 }
 
 model ParticipationDB {
@@ -53,4 +58,18 @@ model ActivityDB {
   hygienePolicy     String?
   kidsWelcome       Boolean?
   petsWelcome       Boolean?
+  smokingAllowed    Boolean?
+  image             ImageDB?          @relation(fields: [imageId], references: [id])
+  imageId           String?           @unique
+}
+
+model ImageDB {
+  id              String      @id @default(cuid())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  createdBy       UserDB      @relation(fields: [createdById], references: [id])
+  createdById     String
+  activity        ActivityDB?
+  profile         UserDB?     @relation(name: "ProfileImage")
+  uploadCompleted Boolean    @default(false)
 }

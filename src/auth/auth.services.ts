@@ -12,9 +12,11 @@ async function updateLastVisited(user: UserDB) {
 
 export async function verifyUserOrThrow(ctx: MercuriusContext) {
   const jwt = ctx.authorization?.split(" ")[1];
+
   if (jwt) {
     return await tokenToUser(jwt, ctx);
   } else {
+    console.log("lol no token");
     throw new Error("UNAUTHORIZED");
   }
 }

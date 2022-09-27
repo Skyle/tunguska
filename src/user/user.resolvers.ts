@@ -1,6 +1,11 @@
+import { ImageDB } from "@prisma/client";
 import { prisma } from "..";
 import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
-import { QueryResolvers, UserResolvers } from "../graphql/generated";
+import {
+  MutationResolvers,
+  QueryResolvers,
+  UserResolvers,
+} from "../graphql/generated";
 
 export const user: QueryResolvers["user"] = async (root, args, ctx) => {
   const authUser = await verifyUser(ctx);
@@ -19,6 +24,32 @@ export const users: QueryResolvers["users"] = async (root, args, ctx) => {
 export const me: QueryResolvers["me"] = async (root, args, ctx) => {
   const verifiedUser = await verifyUserOrThrow(ctx);
   return verifiedUser;
+};
+
+export const updateUser: MutationResolvers["updateUser"] = async (
+  root,
+  args,
+  ctx
+) => {
+  const verifiedUser = await verifyUserOrThrow(ctx);
+  let newProfileImage: ImageDB | null = null;
+  if (args.imageId) {
+    newProfileImage = await prisma.imageDB.findUnique({
+      where: { id: args.imageId },
+    });
+  }
+
+  const updatedUser = await prisma.userDB.update({
+    where: { id: verifiedUser.id },
+    data: {
+      selfDescription: args.selfDescription,
+      profileImage: newProfileImage
+        ? { connect: { id: newProfileImage.id } }
+        : {},
+    },
+  });
+
+  return updatedUser;
 };
 
 // FieldResolvers
@@ -46,4 +77,13 @@ export const participatesIn: UserResolvers["participatesIn"] = async (root) => {
     .findUnique({ where: { id: root.id } })
     .participatesIn();
   return activities;
+};
+
+export const profileImage: UserResolvers["profileImage"] = async (root) => {
+  console.log("profle");
+
+  const profileImageFromDB = await prisma.userDB
+    .findUnique({ where: { id: root.id } })
+    .profileImage();
+  return profileImageFromDB;
 };
