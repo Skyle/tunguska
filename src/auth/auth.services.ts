@@ -44,12 +44,14 @@ export async function tokenToUser(
       });
       if (!user) throw new Error("UNAUTHORIZED");
       updateLastVisited(user);
+      console.log(user.name, " verified");
       ctx.user = user;
       return user;
     } else {
       throw new Error("UNAUTHORIZED");
     }
   } catch (error) {
+    console.error(error);
     throw new Error("UNAUTHORIZED");
   }
 }

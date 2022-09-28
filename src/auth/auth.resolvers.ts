@@ -33,6 +33,7 @@ export const signIn: MutationResolvers["signIn"] = async (
   const user = await prisma.userDB.findUnique({
     where: { name: name },
   });
+  console.log(user?.name, " erstellt");
   if (!user) throw new Error("can not sign in");
   const passwordValid = await argon2.verify(user.password, password);
   if (!passwordValid) throw new Error("can not sign in");

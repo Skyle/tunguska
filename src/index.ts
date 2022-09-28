@@ -9,7 +9,7 @@ import { schema } from "./schema";
 import { resolvers } from "./resolvers";
 import { readFile } from "fs/promises";
 
-export const prisma = new PrismaClient();
+export const prisma = new PrismaClient({ log: ["query"] });
 
 const app = Fastify();
 app.register(cors);
@@ -32,16 +32,7 @@ app.route<{ Params: { imageName: string } }>({
   handler: async (req, rep) => {
     try {
       const { imageName } = req.params;
-      // separate imageName by underscore
-      const [id, endung] = imageName.split("_");
-      let user = null;
-      if (req.headers.authorization?.split(" ")[1]) {
-        const verified = app.jwt.verify(
-          req.headers.authorization?.split(" ")[1]
-        );
-        console.log(verified);
-      }
-
+      const [id] = imageName.split("_");
       const imageFromDB = await prisma.imageDB.findUnique({
         where: { id: id },
         include: { activity: true, user: true },

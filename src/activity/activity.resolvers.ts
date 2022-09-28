@@ -15,19 +15,23 @@ export const activities: QueryResolvers["activities"] = async (
   ctx
 ) => {
   const user = await verifyUser(ctx);
-  return await prisma.activityDB.findMany({
+  const requestedActivities = await prisma.activityDB.findMany({
     where: { public: true },
     take: args.limit ?? 10,
     skip: args.skip ?? 0,
     orderBy: { createdAt: args.order === "ASC" ? "asc" : "desc" },
   });
+  console.log(user?.name, " requested activities");
+  return requestedActivities;
 };
 
 export const activity: QueryResolvers["activity"] = async (root, args, ctx) => {
   const user = await verifyUser(ctx);
-  return await prisma.activityDB.findUnique({
+  const requestedActivity = await prisma.activityDB.findUnique({
     where: { id: args.id },
   });
+  console.log(user?.name, " requested activity ", requestedActivity?.title);
+  return requestedActivity;
 };
 
 // Mutations
@@ -39,7 +43,7 @@ export const createActivity: MutationResolvers["createActivity"] = async (
 ) => {
   const verifiedUser = await verifyUserOrThrow(ctx);
   try {
-    return await prisma.activityDB.create({
+    const createdActivities = await prisma.activityDB.create({
       data: {
         ...activityInput,
         imageId: undefined,
@@ -49,6 +53,12 @@ export const createActivity: MutationResolvers["createActivity"] = async (
           : undefined,
       },
     });
+    console.log(
+      verifiedUser.name,
+      " created activity ",
+      createdActivities.title
+    );
+    return createdActivities;
   } catch (error) {
     console.error(error);
     throw new Error("Activity could not be created");
@@ -70,6 +80,7 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   }
   try {
     await prisma.activityDB.delete({ where: { id: activity.id } });
+    console.log(verifiedUser.name, " deleted activity ", activity.title);
     return "Activity " + activity.id + " deleted";
   } catch (error) {
     console.error(error);
@@ -92,7 +103,6 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
   if (activityToUpdate.createdById !== verifiedUser.id) {
     throw new Error("foreign Activities can not be updated");
   }
-  console.log(activityInput);
 
   const updatedActivity = await prisma.activityDB.update({
     where: { id },
@@ -104,6 +114,8 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
         : undefined,
     },
   });
+
+  console.log(verifiedUser.name, " updated activity ", updatedActivity.title);
 
   return updatedActivity;
 };

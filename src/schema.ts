@@ -91,7 +91,7 @@ export const schema = gql`
     updatedAt: DateTime!
     lastVisitedAt: DateTime
     createdActivities: [Activity!]!
-    participations: [Participation!]!
+    participations(order: Order): [Participation!]!
     createdImages: [Image!]!
     public: Boolean!
     profileImage: Image

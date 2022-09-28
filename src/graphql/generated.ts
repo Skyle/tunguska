@@ -155,6 +155,10 @@ export type User = Node & {
   selfDescription?: Maybe<Scalars["String"]>;
 };
 
+export type UserparticipationsArgs = {
+  order?: InputMaybe<Order>;
+};
+
 export type Activity = Node & {
   __typename?: "Activity";
   id: Scalars["ID"];
@@ -511,7 +515,8 @@ export type UserResolvers<
   participations?: Resolver<
     Array<ResolversTypes["Participation"]>,
     ParentType,
-    ContextType
+    ContextType,
+    Partial<UserparticipationsArgs>
   >;
   createdImages?: Resolver<
     Array<ResolversTypes["Image"]>,
@@ -688,7 +693,12 @@ export interface Loaders<
       TContext
     >;
     createdActivities?: LoaderResolver<Array<Activity>, User, {}, TContext>;
-    participations?: LoaderResolver<Array<Participation>, User, {}, TContext>;
+    participations?: LoaderResolver<
+      Array<Participation>,
+      User,
+      UserparticipationsArgs,
+      TContext
+    >;
     createdImages?: LoaderResolver<Array<Image>, User, {}, TContext>;
     public?: LoaderResolver<Scalars["Boolean"], User, {}, TContext>;
     profileImage?: LoaderResolver<Maybe<Image>, User, {}, TContext>;
