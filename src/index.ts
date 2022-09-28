@@ -9,7 +9,7 @@ import { schema } from "./schema";
 import { resolvers } from "./resolvers";
 import { readFile } from "fs/promises";
 
-export const prisma = new PrismaClient({ log: ["query"] });
+export const prisma = new PrismaClient();
 
 const app = Fastify();
 app.register(cors);

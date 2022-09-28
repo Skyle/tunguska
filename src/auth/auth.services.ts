@@ -16,7 +16,7 @@ export async function verifyUserOrThrow(ctx: MercuriusContext) {
   if (jwt) {
     return await tokenToUser(jwt, ctx);
   } else {
-    console.log("lol no token");
+    console.log("no jwt found");
     throw new Error("UNAUTHORIZED");
   }
 }
