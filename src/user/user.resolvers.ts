@@ -38,6 +38,7 @@ export const updateUser: MutationResolvers["updateUser"] = async (
       where: { id: args.imageId },
     });
   }
+  console.log(newProfileImage);
 
   const updatedUser = await prisma.userDB.update({
     where: { id: verifiedUser.id },
