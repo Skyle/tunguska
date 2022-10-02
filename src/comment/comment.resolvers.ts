@@ -1,6 +1,6 @@
 import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
-import { MutationResolvers } from "../graphql/generated";
+import { CommentResolvers, MutationResolvers } from "../graphql/generated";
 
 // Queries
 export const createComment: MutationResolvers["createComment"] = async (
@@ -25,3 +25,17 @@ export const createComment: MutationResolvers["createComment"] = async (
   console.log(new Date(), verifiedUser.name, "created comment", newComment.id);
   return newComment;
 };
+
+// FieldResolvers
+
+export const commentCreatedByFieldResolver: CommentResolvers["createdBy"] =
+  async (root) => {
+    console.log(root);
+
+    const createdBy = await prisma.commentDB
+      .findUnique({ where: { id: root.id } })
+      .createdBy();
+
+    if (!createdBy) throw new Error("Comment should have a creator");
+    return createdBy;
+  };

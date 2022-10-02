@@ -204,6 +204,7 @@ export type Activity = Node & {
   petsWelcome?: Maybe<Scalars["Boolean"]>;
   smokingAllowed?: Maybe<Scalars["Boolean"]>;
   image?: Maybe<Image>;
+  comments: Array<Comment>;
 };
 
 /** Participation is when a User takes part in an Activity */
@@ -683,6 +684,11 @@ export type ActivityResolvers<
     ContextType
   >;
   image?: Resolver<Maybe<ResolversTypes["Image"]>, ParentType, ContextType>;
+  comments?: Resolver<
+    Array<ResolversTypes["Comment"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -894,6 +900,7 @@ export interface Loaders<
       TContext
     >;
     image?: LoaderResolver<Maybe<Image>, Activity, {}, TContext>;
+    comments?: LoaderResolver<Array<Comment>, Activity, {}, TContext>;
   };
 
   Participation?: {

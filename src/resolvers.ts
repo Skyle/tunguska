@@ -2,6 +2,7 @@ import { IResolvers } from "mercurius";
 import {
   activities,
   activity,
+  activityCommentsFieldResolver,
   createActivity,
   createdBy,
   deleteActivity,
@@ -39,6 +40,10 @@ import {
   followTowardsResolver,
   unfollow,
 } from "./follow/follow.resolvers";
+import {
+  commentCreatedByFieldResolver,
+  createComment,
+} from "./comment/comment.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -68,11 +73,14 @@ export const resolvers: IResolvers = {
     // follow
     follow: follow,
     unfollow: unfollow,
+    // comment
+    createComment: createComment,
   },
   Activity: {
     createdBy: createdBy,
     participations: participations,
     image: imageActivityFieldResolver,
+    comments: activityCommentsFieldResolver,
   },
   User: {
     createdActivities: createdActivities,
@@ -93,5 +101,8 @@ export const resolvers: IResolvers = {
   Follow: {
     by: followByResolver,
     towards: followTowardsResolver,
+  },
+  Comment: {
+    createdBy: commentCreatedByFieldResolver,
   },
 };

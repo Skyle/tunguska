@@ -139,6 +139,7 @@ export const schema = gql`
     petsWelcome: Boolean
     smokingAllowed: Boolean
     image: Image
+    comments: [Comment!]!
   }
 
   """
