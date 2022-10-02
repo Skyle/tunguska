@@ -1,6 +1,7 @@
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
-import { MutationResolvers } from "../graphql/generated";
+import { FollowResolvers, MutationResolvers } from "../graphql/generated";
 
 export const follow: MutationResolvers["follow"] = async (
   root,
@@ -12,12 +13,42 @@ export const follow: MutationResolvers["follow"] = async (
     where: { id: userId },
   });
   if (!userToFollow) throw new Error("User not found");
+  try {
+    const newFollow = await prisma.followDB.create({
+      data: {
+        by: { connect: { id: verifiedUser.id } },
+        towards: { connect: { id: userToFollow.id } },
+      },
+    });
+    return newFollow;
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw new Error("You already followed this User");
+    }
+    console.error(error);
+    throw new Error("Follow could not be created");
+  }
+};
 
-  const newFollow = await prisma.followDB.create({
-    data: {
-      by: { connect: { id: verifiedUser.id } },
-      towards: { connect: { id: userToFollow.id } },
-    },
-  });
-  return newFollow;
+// FieldResolvers
+
+export const followByResolver: FollowResolvers["by"] = async (root) => {
+  const by = await prisma.followDB.findUnique({ where: { id: root.id } }).by();
+
+  if (!by) throw new Error("No user found");
+  return by;
+};
+
+export const followTowardsResolver: FollowResolvers["towards"] = async (
+  root
+) => {
+  const towards = await prisma.followDB
+    .findUnique({ where: { id: root.id } })
+    .towards();
+
+  if (!towards) throw new Error("No user found");
+  return towards;
 };

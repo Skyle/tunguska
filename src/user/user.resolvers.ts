@@ -106,3 +106,13 @@ export const userFollowsResolver: UserResolvers["follows"] = async (root) => {
   if (!follows) throw new Error("No follows found");
   return follows;
 };
+
+export const userIsFollowingResolver: UserResolvers["follows"] = async (
+  root
+) => {
+  const isFollowing = await prisma.userDB
+    .findUnique({ where: { id: root.id } })
+    .isFollowing();
+  if (!isFollowing) throw new Error("No isFollowing found");
+  return isFollowing;
+};

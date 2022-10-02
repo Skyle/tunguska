@@ -25,6 +25,7 @@ import {
   updateUser,
   user,
   userFollowsResolver,
+  userIsFollowingResolver,
   users,
 } from "./user/user.resolvers";
 import {
@@ -32,7 +33,11 @@ import {
   uploadImage,
   userImageFieldResolver,
 } from "./image/image.resolvers";
-import { follow } from "./follow/follow.resolvers";
+import {
+  follow,
+  followByResolver,
+  followTowardsResolver,
+} from "./follow/follow.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -73,6 +78,7 @@ export const resolvers: IResolvers = {
     profileImage: profileImage,
     createdImages: createdImages,
     follows: userFollowsResolver,
+    isFollowing: userIsFollowingResolver,
   },
   Participation: {
     user: userParticipationFieldResolver,
@@ -81,5 +87,9 @@ export const resolvers: IResolvers = {
   Image: {
     createdBy: createdByImageFieldResolver,
     user: userImageFieldResolver,
+  },
+  Follow: {
+    by: followByResolver,
+    towards: followTowardsResolver,
   },
 };
