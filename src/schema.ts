@@ -90,6 +90,10 @@ export const schema = gql`
     unfollow an user
     """
     unfollow(userId: String!): User!
+    """
+    create a comment
+    """
+    createComment(activityId: String!, text: String!): Comment!
   }
 
   type User implements Node {
@@ -164,6 +168,15 @@ export const schema = gql`
     updatedAt: DateTime!
     towards: User!
     by: User!
+  }
+
+  type Comment implements Node {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    createdBy: User!
+    activity: Activity!
+    text: String!
   }
 
   input NamePasswordInput {

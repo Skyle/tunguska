@@ -7,6 +7,8 @@ import {
   UserResolvers,
 } from "../graphql/generated";
 
+// Queries
+
 export const user: QueryResolvers["user"] = async (root, args, ctx) => {
   const authUser = await verifyUser(ctx);
   const requestedUser = await prisma.userDB.findUnique({
@@ -18,13 +20,17 @@ export const user: QueryResolvers["user"] = async (root, args, ctx) => {
 export const users: QueryResolvers["users"] = async (root, args, ctx) => {
   const verifiedUser = await verifyUserOrThrow(ctx);
   const users = await prisma.userDB.findMany();
+  console.log(new Date(), verifiedUser.name, "requested users");
   return users;
 };
 
 export const me: QueryResolvers["me"] = async (root, args, ctx) => {
   const verifiedUser = await verifyUserOrThrow(ctx);
+  console.log(new Date(), verifiedUser.name, "requested me");
   return verifiedUser;
 };
+
+// Mutations
 
 export const updateUser: MutationResolvers["updateUser"] = async (
   root,
@@ -38,7 +44,6 @@ export const updateUser: MutationResolvers["updateUser"] = async (
       where: { id: args.imageId },
     });
   }
-  console.log(newProfileImage);
 
   const updatedUser = await prisma.userDB.update({
     where: { id: verifiedUser.id },
@@ -49,6 +54,7 @@ export const updateUser: MutationResolvers["updateUser"] = async (
         : {},
     },
   });
+  console.log(new Date(), verifiedUser.name, "updated user");
 
   return updatedUser;
 };
@@ -65,6 +71,7 @@ export const createdActivities: UserResolvers["createdActivities"] = async (
       .findUnique({ where: { id: root.id } })
       .createdActivities();
     if (!activities) throw new Error("No activities found");
+
     return activities;
   } else {
     const activities = await prisma.userDB

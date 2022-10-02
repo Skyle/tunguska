@@ -13,7 +13,7 @@ datasource db {
 model UserDB {
   id                String            @id @default(cuid())
   name              String            @unique
-  password          String
+  password          String  
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   lastVisitedAt     DateTime?
@@ -26,6 +26,7 @@ model UserDB {
   selfDescription   String?
   follows           FollowDB[]        @relation(name: "UserFollows")
   isFollowing       FollowDB[]        @relation(name: "UserIsFollowing")
+  createdComments   CommentDB[]
 }
 
 model ParticipationDB {
@@ -63,6 +64,7 @@ model ActivityDB {
   smokingAllowed    Boolean?
   image             ImageDB?          @relation(fields: [imageId], references: [id])
   imageId           String?           @unique
+  comments          CommentDB[]
 }
 
 model ImageDB {
@@ -86,4 +88,15 @@ model FollowDB {
   byId      String
 
   @@unique([towardsId, byId])
+}
+
+model CommentDB {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  createdBy   UserDB     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String
+  activity    ActivityDB @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId  String
+  text        String
 }
