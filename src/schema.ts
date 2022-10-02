@@ -82,6 +82,14 @@ export const schema = gql`
     update an user
     """
     updateUser(imageId: String, selfDescription: String): User!
+    """
+    follow an user
+    """
+    follow(userId: String!): Follow!
+    """
+    unfollow an user
+    """
+    unfollow(userId: String!): User!
   }
 
   type User implements Node {
@@ -96,6 +104,14 @@ export const schema = gql`
     public: Boolean!
     profileImage: Image
     selfDescription: String
+    """
+    who is following this User
+    """
+    follows: [Follow!]!
+    """
+    who is followed by this User
+    """
+    isFollowing: [Follow!]!
   }
 
   type Activity implements Node {
@@ -140,6 +156,14 @@ export const schema = gql`
     uploadCompleted: Boolean!
     user: User
     activity: Activity
+  }
+
+  type Follow implements Node {
+    id: ID!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+    towards: User!
+    by: User!
   }
 
   input NamePasswordInput {
