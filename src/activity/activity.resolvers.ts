@@ -221,3 +221,13 @@ export const imageActivityFieldResolver: ActivityResolvers["image"] = async (
     .image();
   return image;
 };
+
+export const activityCommentsFieldResolver: ActivityResolvers["comments"] =
+  async (root) => {
+    const comments = await prisma.activityDB
+      .findUnique({ where: { id: root.id } })
+      .comments();
+
+    if (!comments) throw new Error("Activity should always have comments");
+    return comments;
+  };

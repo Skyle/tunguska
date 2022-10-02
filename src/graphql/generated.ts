@@ -104,6 +104,8 @@ export type Mutation = {
   follow: Follow;
   /** unfollow an user */
   unfollow: User;
+  /** create a comment */
+  createComment: Comment;
 };
 
 export type MutationsignUpArgs = {
@@ -152,6 +154,11 @@ export type MutationunfollowArgs = {
   userId: Scalars["String"];
 };
 
+export type MutationcreateCommentArgs = {
+  activityId: Scalars["String"];
+  text: Scalars["String"];
+};
+
 export type User = Node & {
   __typename?: "User";
   id: Scalars["ID"];
@@ -197,6 +204,7 @@ export type Activity = Node & {
   petsWelcome?: Maybe<Scalars["Boolean"]>;
   smokingAllowed?: Maybe<Scalars["Boolean"]>;
   image?: Maybe<Image>;
+  comments: Array<Comment>;
 };
 
 /** Participation is when a User takes part in an Activity */
@@ -227,6 +235,16 @@ export type Follow = Node & {
   updatedAt: Scalars["DateTime"];
   towards: User;
   by: User;
+};
+
+export type Comment = Node & {
+  __typename?: "Comment";
+  id: Scalars["ID"];
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
+  createdBy: User;
+  activity: Activity;
+  text: Scalars["String"];
 };
 
 export type NamePasswordInput = {
@@ -366,7 +384,8 @@ export type ResolversTypes = {
     | ResolversTypes["Activity"]
     | ResolversTypes["Participation"]
     | ResolversTypes["Image"]
-    | ResolversTypes["Follow"];
+    | ResolversTypes["Follow"]
+    | ResolversTypes["Comment"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
@@ -378,6 +397,7 @@ export type ResolversTypes = {
   Participation: ResolverTypeWrapper<Participation>;
   Image: ResolverTypeWrapper<Image>;
   Follow: ResolverTypeWrapper<Follow>;
+  Comment: ResolverTypeWrapper<Comment>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -392,7 +412,8 @@ export type ResolversParentTypes = {
     | ResolversParentTypes["Activity"]
     | ResolversParentTypes["Participation"]
     | ResolversParentTypes["Image"]
-    | ResolversParentTypes["Follow"];
+    | ResolversParentTypes["Follow"]
+    | ResolversParentTypes["Comment"];
   ID: Scalars["ID"];
   Query: {};
   Float: Scalars["Float"];
@@ -404,6 +425,7 @@ export type ResolversParentTypes = {
   Participation: Participation;
   Image: Image;
   Follow: Follow;
+  Comment: Comment;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -428,7 +450,7 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = {
   resolveType: TypeResolveFn<
-    "User" | "Activity" | "Participation" | "Image" | "Follow",
+    "User" | "Activity" | "Participation" | "Image" | "Follow" | "Comment",
     ParentType,
     ContextType
   >;
@@ -532,6 +554,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationunfollowArgs, "userId">
+  >;
+  createComment?: Resolver<
+    ResolversTypes["Comment"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationcreateCommentArgs, "activityId" | "text">
   >;
 };
 
@@ -656,6 +684,11 @@ export type ActivityResolvers<
     ContextType
   >;
   image?: Resolver<Maybe<ResolversTypes["Image"]>, ParentType, ContextType>;
+  comments?: Resolver<
+    Array<ResolversTypes["Comment"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -705,6 +738,19 @@ export type FollowResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CommentResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["Comment"] = ResolversParentTypes["Comment"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  activity?: Resolver<ResolversTypes["Activity"], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
@@ -717,6 +763,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Participation?: ParticipationResolvers<ContextType>;
   Image?: ImageResolvers<ContextType>;
   Follow?: FollowResolvers<ContextType>;
+  Comment?: CommentResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (
@@ -853,6 +900,7 @@ export interface Loaders<
       TContext
     >;
     image?: LoaderResolver<Maybe<Image>, Activity, {}, TContext>;
+    comments?: LoaderResolver<Array<Comment>, Activity, {}, TContext>;
   };
 
   Participation?: {
@@ -889,6 +937,15 @@ export interface Loaders<
     updatedAt?: LoaderResolver<Scalars["DateTime"], Follow, {}, TContext>;
     towards?: LoaderResolver<User, Follow, {}, TContext>;
     by?: LoaderResolver<User, Follow, {}, TContext>;
+  };
+
+  Comment?: {
+    id?: LoaderResolver<Scalars["ID"], Comment, {}, TContext>;
+    createdAt?: LoaderResolver<Scalars["DateTime"], Comment, {}, TContext>;
+    updatedAt?: LoaderResolver<Scalars["DateTime"], Comment, {}, TContext>;
+    createdBy?: LoaderResolver<User, Comment, {}, TContext>;
+    activity?: LoaderResolver<Activity, Comment, {}, TContext>;
+    text?: LoaderResolver<Scalars["String"], Comment, {}, TContext>;
   };
 }
 declare module "mercurius" {
