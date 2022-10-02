@@ -25,6 +25,7 @@ import {
   profileImage,
   updateUser,
   user,
+  userCreatedCommentsFieldResolver,
   userFollowsResolver,
   userIsFollowingResolver,
   users,
@@ -43,6 +44,7 @@ import {
 import {
   commentCreatedByFieldResolver,
   createComment,
+  deleteComment,
 } from "./comment/comment.resolvers";
 
 export const resolvers: IResolvers = {
@@ -75,6 +77,7 @@ export const resolvers: IResolvers = {
     unfollow: unfollow,
     // comment
     createComment: createComment,
+    deleteComment: deleteComment,
   },
   Activity: {
     createdBy: createdBy,
@@ -89,6 +92,7 @@ export const resolvers: IResolvers = {
     createdImages: createdImages,
     follows: userFollowsResolver,
     isFollowing: userIsFollowingResolver,
+    createdComments: userCreatedCommentsFieldResolver,
   },
   Participation: {
     user: userParticipationFieldResolver,

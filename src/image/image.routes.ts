@@ -13,7 +13,6 @@ const imageRoutes: FastifyPluginAsync = async (fastify, options) => {
         const [id] = imageName.split("_");
         const imageFromDB = await prisma.imageDB.findUnique({
           where: { id: id },
-          include: { activity: true, user: true },
         });
         if (imageFromDB) {
           const stream = await readFile("./files/images/" + imageName);

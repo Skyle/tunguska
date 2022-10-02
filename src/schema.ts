@@ -94,6 +94,10 @@ export const schema = gql`
     create a comment
     """
     createComment(activityId: String!, text: String!): Comment!
+    """
+    delete a comment
+    """
+    deleteComment(id: ID!): String!
   }
 
   type User implements Node {
@@ -116,6 +120,7 @@ export const schema = gql`
     who is followed by this User
     """
     isFollowing: [Follow!]!
+    createdComments: [Comment!]!
   }
 
   type Activity implements Node {

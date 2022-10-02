@@ -122,3 +122,12 @@ export const userIsFollowingResolver: UserResolvers["follows"] = async (
   if (!isFollowing) throw new Error("No isFollowing found");
   return isFollowing;
 };
+
+export const userCreatedCommentsFieldResolver: UserResolvers["createdComments"] =
+  async (root) => {
+    const createdComments = await prisma.userDB
+      .findUnique({ where: { id: root.id } })
+      .createdComments();
+    if (!createdComments) throw new Error("No createdComments found");
+    return createdComments;
+  };

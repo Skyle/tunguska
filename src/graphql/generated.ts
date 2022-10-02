@@ -106,6 +106,8 @@ export type Mutation = {
   unfollow: User;
   /** create a comment */
   createComment: Comment;
+  /** delete a comment */
+  deleteComment: Scalars["String"];
 };
 
 export type MutationsignUpArgs = {
@@ -159,6 +161,10 @@ export type MutationcreateCommentArgs = {
   text: Scalars["String"];
 };
 
+export type MutationdeleteCommentArgs = {
+  id: Scalars["ID"];
+};
+
 export type User = Node & {
   __typename?: "User";
   id: Scalars["ID"];
@@ -176,6 +182,7 @@ export type User = Node & {
   follows: Array<Follow>;
   /** who is followed by this User */
   isFollowing: Array<Follow>;
+  createdComments: Array<Comment>;
 };
 
 export type UserparticipationsArgs = {
@@ -561,6 +568,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationcreateCommentArgs, "activityId" | "text">
   >;
+  deleteComment?: Resolver<
+    ResolversTypes["String"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationdeleteCommentArgs, "id">
+  >;
 };
 
 export type UserResolvers<
@@ -606,6 +619,11 @@ export type UserResolvers<
   follows?: Resolver<Array<ResolversTypes["Follow"]>, ParentType, ContextType>;
   isFollowing?: Resolver<
     Array<ResolversTypes["Follow"]>,
+    ParentType,
+    ContextType
+  >;
+  createdComments?: Resolver<
+    Array<ResolversTypes["Comment"]>,
     ParentType,
     ContextType
   >;
@@ -817,6 +835,7 @@ export interface Loaders<
     >;
     follows?: LoaderResolver<Array<Follow>, User, {}, TContext>;
     isFollowing?: LoaderResolver<Array<Follow>, User, {}, TContext>;
+    createdComments?: LoaderResolver<Array<Comment>, User, {}, TContext>;
   };
 
   Activity?: {

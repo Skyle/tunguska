@@ -2,7 +2,7 @@ import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
 import { CommentResolvers, MutationResolvers } from "../graphql/generated";
 
-// Queries
+// Mutations
 export const createComment: MutationResolvers["createComment"] = async (
   root,
   { text, activityId },
@@ -24,6 +24,46 @@ export const createComment: MutationResolvers["createComment"] = async (
   });
   console.log(new Date(), verifiedUser.name, "created comment", newComment.id);
   return newComment;
+};
+
+// Mutations
+export const deleteComment: MutationResolvers["deleteComment"] = async (
+  root,
+  { id },
+  ctx
+) => {
+  const verifiedUser = await verifyUserOrThrow(ctx);
+  const comment = await prisma.commentDB.findUnique({
+    where: { id },
+    include: { createdBy: true },
+  });
+  if (!comment) {
+    console.log(
+      new Date(),
+      verifiedUser.name,
+      "tried to delete non-existing comment",
+      id
+    );
+    throw new Error("Comment does not exist");
+  }
+
+  if (comment.createdBy.id === verifiedUser.id) {
+    try {
+      await prisma.commentDB.delete({ where: { id: comment.id } });
+      console.log(new Date(), verifiedUser.name, "deleted comment", comment.id);
+      return "Comment " + comment.id + " deleted";
+    } catch (error) {
+      console.error(error);
+      throw new Error("Comment " + comment.id + " could not be deleted");
+    }
+  } else {
+    console.error(
+      verifiedUser.name,
+      "tried and failed to delete comment",
+      comment.id
+    );
+    throw new Error("Could cot delete foreign comment");
+  }
 };
 
 // FieldResolvers
