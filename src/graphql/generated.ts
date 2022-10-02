@@ -100,8 +100,10 @@ export type Mutation = {
   uploadImage: Image;
   /** update an user */
   updateUser: User;
-  /** follow a user */
+  /** follow an user */
   follow: Follow;
+  /** unfollow an user */
+  unfollow: User;
 };
 
 export type MutationsignUpArgs = {
@@ -143,6 +145,10 @@ export type MutationupdateUserArgs = {
 };
 
 export type MutationfollowArgs = {
+  userId: Scalars["String"];
+};
+
+export type MutationunfollowArgs = {
   userId: Scalars["String"];
 };
 
@@ -520,6 +526,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationfollowArgs, "userId">
+  >;
+  unfollow?: Resolver<
+    ResolversTypes["User"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationunfollowArgs, "userId">
   >;
 };
 

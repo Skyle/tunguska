@@ -37,6 +37,7 @@ import {
   follow,
   followByResolver,
   followTowardsResolver,
+  unfollow,
 } from "./follow/follow.resolvers";
 
 export const resolvers: IResolvers = {
@@ -66,6 +67,7 @@ export const resolvers: IResolvers = {
     updateUser: updateUser,
     // follow
     follow: follow,
+    unfollow: unfollow,
   },
   Activity: {
     createdBy: createdBy,

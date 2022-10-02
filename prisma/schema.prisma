@@ -46,7 +46,7 @@ model ActivityDB {
   description       String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
-  createdBy         UserDB            @relation(fields: [createdById], references: [id])
+  createdBy         UserDB            @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById       String
   venueName         String?
   geoLocation       String?
@@ -69,7 +69,7 @@ model ImageDB {
   id              String      @id @default(cuid())
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  createdBy       UserDB      @relation(fields: [createdById], references: [id])
+  createdBy       UserDB      @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById     String
   activity        ActivityDB?
   user            UserDB?     @relation(name: "ProfileImage")
@@ -80,9 +80,9 @@ model FollowDB {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  towards   UserDB   @relation(name: "UserFollows", fields: [towardsId], references: [id])
+  towards   UserDB   @relation(name: "UserFollows", fields: [towardsId], references: [id], onDelete: Cascade)
   towardsId String
-  by        UserDB   @relation(name: "UserIsFollowing", fields: [byId], references: [id])
+  by        UserDB   @relation(name: "UserIsFollowing", fields: [byId], references: [id], onDelete: Cascade)
   byId      String
 
   @@unique([towardsId, byId])
