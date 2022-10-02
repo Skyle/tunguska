@@ -84,4 +84,6 @@ model FollowDB {
   towardsId String
   by        UserDB   @relation(name: "UserIsFollowing", fields: [byId], references: [id])
   byId      String
+
+  @@unique([towardsId, byId])
 }

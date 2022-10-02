@@ -82,6 +82,10 @@ export const schema = gql`
     update an user
     """
     updateUser(imageId: String, selfDescription: String): User!
+    """
+    follow a user
+    """
+    follow(userId: String!): Follow!
   }
 
   type User implements Node {

@@ -100,6 +100,8 @@ export type Mutation = {
   uploadImage: Image;
   /** update an user */
   updateUser: User;
+  /** follow a user */
+  follow: Follow;
 };
 
 export type MutationsignUpArgs = {
@@ -138,6 +140,10 @@ export type MutationuploadImageArgs = {
 export type MutationupdateUserArgs = {
   imageId?: InputMaybe<Scalars["String"]>;
   selfDescription?: InputMaybe<Scalars["String"]>;
+};
+
+export type MutationfollowArgs = {
+  userId: Scalars["String"];
 };
 
 export type User = Node & {
@@ -508,6 +514,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     Partial<MutationupdateUserArgs>
+  >;
+  follow?: Resolver<
+    ResolversTypes["Follow"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationfollowArgs, "userId">
   >;
 };
 

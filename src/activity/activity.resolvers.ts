@@ -21,7 +21,7 @@ export const activities: QueryResolvers["activities"] = async (
     skip: args.skip ?? 0,
     orderBy: { createdAt: args.order === "ASC" ? "asc" : "desc" },
   });
-  console.log(new Date(), user?.name, " requested activities");
+  console.log(new Date(), user?.name, "requested activities");
 
   return requestedActivities;
 };
@@ -31,7 +31,7 @@ export const activity: QueryResolvers["activity"] = async (root, args, ctx) => {
   const requestedActivity = await prisma.activityDB.findUnique({
     where: { id: args.id },
   });
-  console.log(new Date(), user?.name, " requested activity ", args.id);
+  console.log(new Date(), user?.name, "requested activity ", args.id);
   return requestedActivity;
 };
 

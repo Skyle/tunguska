@@ -44,7 +44,7 @@ export async function tokenToUser(
       });
       if (!user) throw new Error("UNAUTHORIZED");
       updateLastVisited(user);
-      console.log(user.name, " verified");
+      console.log(new Date(), user.name, "verified");
       ctx.user = user;
       return user;
     } else {

@@ -32,6 +32,7 @@ import {
   uploadImage,
   userImageFieldResolver,
 } from "./image/image.resolvers";
+import { follow } from "./follow/follow.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -58,6 +59,8 @@ export const resolvers: IResolvers = {
     uploadImage: uploadImage,
     // user
     updateUser: updateUser,
+    // follow
+    follow: follow,
   },
   Activity: {
     createdBy: createdBy,
