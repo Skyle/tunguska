@@ -79,3 +79,13 @@ export const commentCreatedByFieldResolver: CommentResolvers["createdBy"] =
     if (!createdBy) throw new Error("Comment should have a creator");
     return createdBy;
   };
+
+export const commentActivityFieldResolver: CommentResolvers["activity"] =
+  async (root) => {
+    const activity = await prisma.commentDB
+      .findUnique({ where: { id: root.id } })
+      .activity();
+
+    if (!activity) throw new Error("Comment should have an activity");
+    return activity;
+  };
