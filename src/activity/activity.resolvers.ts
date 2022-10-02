@@ -204,10 +204,13 @@ export const createdBy: ActivityResolvers["createdBy"] = async (root) => {
 export const participations: ActivityResolvers["participations"] = async (
   root
 ) => {
-  const users = await prisma.activityDB
+  const participations = await prisma.activityDB
     .findUnique({ where: { id: root.id } })
     .participations();
-  return users;
+  if (!participations)
+    throw new Error("Activity should always have participations");
+
+  return participations;
 };
 
 export const imageActivityFieldResolver: ActivityResolvers["image"] = async (

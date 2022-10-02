@@ -24,6 +24,8 @@ model UserDB {
   profileImage      ImageDB?          @relation(fields: [profileImageId], references: [id], name: "ProfileImage")
   profileImageId    String?           @unique
   selfDescription   String?
+  follows           FollowDB[]        @relation(name: "UserFollows")
+  isFollowing       FollowDB[]        @relation(name: "UserIsFollowing")
 }
 
 model ParticipationDB {
@@ -72,4 +74,14 @@ model ImageDB {
   activity        ActivityDB?
   user            UserDB?     @relation(name: "ProfileImage")
   uploadCompleted Boolean     @default(false)
+}
+
+model FollowDB {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  towards   UserDB   @relation(name: "UserFollows", fields: [towardsId], references: [id])
+  towardsId String
+  by        UserDB   @relation(name: "UserIsFollowing", fields: [byId], references: [id])
+  byId      String
 }

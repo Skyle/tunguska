@@ -64,11 +64,13 @@ export const createdActivities: UserResolvers["createdActivities"] = async (
     const activities = await prisma.userDB
       .findUnique({ where: { id: root.id } })
       .createdActivities();
+    if (!activities) throw new Error("No activities found");
     return activities;
   } else {
     const activities = await prisma.userDB
       .findUnique({ where: { id: root.id } })
       .createdActivities({ where: { public: true } });
+    if (!activities) throw new Error("No activities found");
     return activities;
   }
 };
@@ -78,6 +80,7 @@ export const participationsUserFieldResolver: UserResolvers["participations"] =
     const participations = await prisma.userDB
       .findUnique({ where: { id: root.id } })
       .participations();
+    if (!participations) throw new Error("No participations found");
     return participations;
   };
 
@@ -92,5 +95,14 @@ export const createdImages: UserResolvers["createdImages"] = async (root) => {
   const createdImagesForUser = await prisma.userDB
     .findUnique({ where: { id: root.id } })
     .createdImages();
+  if (!createdImagesForUser) throw new Error("No images found");
   return createdImagesForUser;
+};
+
+export const userFollowsResolver: UserResolvers["follows"] = async (root) => {
+  const follows = await prisma.userDB
+    .findUnique({ where: { id: root.id } })
+    .follows();
+  if (!follows) throw new Error("No follows found");
+  return follows;
 };

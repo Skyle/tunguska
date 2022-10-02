@@ -1,0 +1,16 @@
+-- CreateTable
+CREATE TABLE "FollowDB" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "towardsId" TEXT NOT NULL,
+    "byId" TEXT NOT NULL,
+
+    CONSTRAINT "FollowDB_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "FollowDB" ADD CONSTRAINT "FollowDB_towardsId_fkey" FOREIGN KEY ("towardsId") REFERENCES "UserDB"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FollowDB" ADD CONSTRAINT "FollowDB_byId_fkey" FOREIGN KEY ("byId") REFERENCES "UserDB"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

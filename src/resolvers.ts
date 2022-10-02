@@ -24,6 +24,7 @@ import {
   profileImage,
   updateUser,
   user,
+  userFollowsResolver,
   users,
 } from "./user/user.resolvers";
 import {
@@ -68,6 +69,7 @@ export const resolvers: IResolvers = {
     participations: participationsUserFieldResolver,
     profileImage: profileImage,
     createdImages: createdImages,
+    follows: userFollowsResolver,
   },
   Participation: {
     user: userParticipationFieldResolver,

@@ -153,6 +153,10 @@ export type User = Node & {
   public: Scalars["Boolean"];
   profileImage?: Maybe<Image>;
   selfDescription?: Maybe<Scalars["String"]>;
+  /** who is following this User */
+  follows: Array<Follow>;
+  /** who is followed by this User */
+  isFollowing: Array<Follow>;
 };
 
 export type UserparticipationsArgs = {
@@ -202,6 +206,15 @@ export type Image = Node & {
   uploadCompleted: Scalars["Boolean"];
   user?: Maybe<User>;
   activity?: Maybe<Activity>;
+};
+
+export type Follow = Node & {
+  __typename?: "Follow";
+  id: Scalars["ID"];
+  createdAt: Scalars["DateTime"];
+  updatedAt: Scalars["DateTime"];
+  towards: User;
+  by: User;
 };
 
 export type NamePasswordInput = {
@@ -340,7 +353,8 @@ export type ResolversTypes = {
     | ResolversTypes["User"]
     | ResolversTypes["Activity"]
     | ResolversTypes["Participation"]
-    | ResolversTypes["Image"];
+    | ResolversTypes["Image"]
+    | ResolversTypes["Follow"];
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
@@ -351,6 +365,7 @@ export type ResolversTypes = {
   Activity: ResolverTypeWrapper<Activity>;
   Participation: ResolverTypeWrapper<Participation>;
   Image: ResolverTypeWrapper<Image>;
+  Follow: ResolverTypeWrapper<Follow>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -364,7 +379,8 @@ export type ResolversParentTypes = {
     | ResolversParentTypes["User"]
     | ResolversParentTypes["Activity"]
     | ResolversParentTypes["Participation"]
-    | ResolversParentTypes["Image"];
+    | ResolversParentTypes["Image"]
+    | ResolversParentTypes["Follow"];
   ID: Scalars["ID"];
   Query: {};
   Float: Scalars["Float"];
@@ -375,6 +391,7 @@ export type ResolversParentTypes = {
   Activity: Activity;
   Participation: Participation;
   Image: Image;
+  Follow: Follow;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
 };
@@ -399,7 +416,7 @@ export type NodeResolvers<
   ParentType extends ResolversParentTypes["Node"] = ResolversParentTypes["Node"]
 > = {
   resolveType: TypeResolveFn<
-    "User" | "Activity" | "Participation" | "Image",
+    "User" | "Activity" | "Participation" | "Image" | "Follow",
     ParentType,
     ContextType
   >;
@@ -534,6 +551,12 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  follows?: Resolver<Array<ResolversTypes["Follow"]>, ParentType, ContextType>;
+  isFollowing?: Resolver<
+    Array<ResolversTypes["Follow"]>,
+    ParentType,
+    ContextType
+  >;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -646,6 +669,18 @@ export type ImageResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FollowResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["Follow"] = ResolversParentTypes["Follow"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes["DateTime"], ParentType, ContextType>;
+  towards?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  by?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
+  isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
@@ -657,6 +692,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Activity?: ActivityResolvers<ContextType>;
   Participation?: ParticipationResolvers<ContextType>;
   Image?: ImageResolvers<ContextType>;
+  Follow?: FollowResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (
@@ -708,6 +744,8 @@ export interface Loaders<
       {},
       TContext
     >;
+    follows?: LoaderResolver<Array<Follow>, User, {}, TContext>;
+    isFollowing?: LoaderResolver<Array<Follow>, User, {}, TContext>;
   };
 
   Activity?: {
@@ -819,6 +857,14 @@ export interface Loaders<
     uploadCompleted?: LoaderResolver<Scalars["Boolean"], Image, {}, TContext>;
     user?: LoaderResolver<Maybe<User>, Image, {}, TContext>;
     activity?: LoaderResolver<Maybe<Activity>, Image, {}, TContext>;
+  };
+
+  Follow?: {
+    id?: LoaderResolver<Scalars["ID"], Follow, {}, TContext>;
+    createdAt?: LoaderResolver<Scalars["DateTime"], Follow, {}, TContext>;
+    updatedAt?: LoaderResolver<Scalars["DateTime"], Follow, {}, TContext>;
+    towards?: LoaderResolver<User, Follow, {}, TContext>;
+    by?: LoaderResolver<User, Follow, {}, TContext>;
   };
 }
 declare module "mercurius" {
