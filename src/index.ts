@@ -7,7 +7,6 @@ import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import { schema } from "./schema";
 import { resolvers } from "./resolvers";
-import { readFile } from "fs/promises";
 
 export const prisma = new PrismaClient();
 
@@ -18,6 +17,7 @@ app.register(jwt, {
     "verynottopsecretpasswordjagarnichtsicherganzsicheraberdafuerlangundgutlesbarhaha",
 });
 app.register(MercuriusGQLUpload);
+app.register(import("./image/image.routes"));
 
 const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
   return {
@@ -25,28 +25,6 @@ const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
     user: null,
   };
 };
-
-app.route<{ Params: { imageName: string } }>({
-  url: "/files/images/:imageName",
-  method: "GET",
-  handler: async (req, rep) => {
-    try {
-      const { imageName } = req.params;
-      const [id] = imageName.split("_");
-      const imageFromDB = await prisma.imageDB.findUnique({
-        where: { id: id },
-        include: { activity: true, user: true },
-      });
-      if (imageFromDB) {
-        const stream = await readFile("./files/images/" + imageName);
-        rep.send(stream);
-      }
-    } catch (error) {
-      console.error("error", error);
-      throw new Error("could not find image");
-    }
-  },
-});
 
 app.register(mercurius, {
   schema: schema,
