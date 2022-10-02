@@ -65,7 +65,7 @@ export const createdByImageFieldResolver: ImageResolvers["createdBy"] = async (
   return user;
 };
 
-export const userImageFieldResolver: ImageResolvers["user"] = async (root) => {
+export const imageUserFieldResolver: ImageResolvers["user"] = async (root) => {
   const user = await prisma.imageDB
     .findUnique({ where: { id: root.id } })
     .user();

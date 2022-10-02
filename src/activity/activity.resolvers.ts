@@ -1,3 +1,4 @@
+import { ImageDB } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
 import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
@@ -105,19 +106,27 @@ export const updateActivity: MutationResolvers["updateActivity"] = async (
     throw new Error("foreign Activities can not be updated");
   }
 
+  let newActivityImage: ImageDB | null = null;
+  if (activityInput.imageId) {
+    newActivityImage = await prisma.imageDB.findUnique({
+      where: { id: activityInput.imageId },
+    });
+  }
   const updatedActivity = await prisma.activityDB.update({
     where: { id },
     data: {
       ...activityInput,
       imageId: undefined,
-      image: activityInput.imageId
-        ? { connect: { id: activityInput.imageId } }
-        : undefined,
+      image: newActivityImage ? { connect: { id: newActivityImage.id } } : {},
     },
   });
 
-  console.log(verifiedUser.name, " updated activity ", updatedActivity.title);
-
+  console.log(
+    new Date(),
+    verifiedUser.name,
+    "updated activity",
+    updatedActivity.title
+  );
   return updatedActivity;
 };
 

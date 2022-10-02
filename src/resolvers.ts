@@ -33,7 +33,7 @@ import {
 import {
   createdByImageFieldResolver,
   uploadImage,
-  userImageFieldResolver,
+  imageUserFieldResolver,
 } from "./image/image.resolvers";
 import {
   follow,
@@ -101,7 +101,7 @@ export const resolvers: IResolvers = {
   },
   Image: {
     createdBy: createdByImageFieldResolver,
-    user: userImageFieldResolver,
+    user: imageUserFieldResolver,
   },
   Follow: {
     by: followByResolver,
