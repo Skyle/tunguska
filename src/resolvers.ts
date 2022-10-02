@@ -42,6 +42,7 @@ import {
   unfollow,
 } from "./follow/follow.resolvers";
 import {
+  commentActivityFieldResolver,
   commentCreatedByFieldResolver,
   createComment,
   deleteComment,
@@ -108,5 +109,6 @@ export const resolvers: IResolvers = {
   },
   Comment: {
     createdBy: commentCreatedByFieldResolver,
+    activity: commentActivityFieldResolver,
   },
 };
