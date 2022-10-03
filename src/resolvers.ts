@@ -39,7 +39,6 @@ import {
 import {
   follow,
   followByResolver,
-  followIsTypeOfResolver,
   followTowardsResolver,
   unfollow,
 } from "./follow/follow.resolvers";
