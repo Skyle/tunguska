@@ -91,15 +91,6 @@ export const resolvers: IResolvers = {
     participations: activityParticipationsFieldResolver,
     image: imageActivityFieldResolver,
     comments: activityCommentsFieldResolver,
-    isTypeOf: (obj, lol) => {
-      console.log(obj);
-
-      if (obj.title) {
-        return true;
-      } else {
-        return false;
-      }
-    },
   },
   User: {
     createdActivities: createdActivities,
@@ -113,16 +104,6 @@ export const resolvers: IResolvers = {
   Participation: {
     user: userParticipationFieldResolver,
     activity: activityParticipationFieldResolver,
-    isTypeOf: (obj) => {
-      console.log(obj);
-
-      const anyedobj = obj as any;
-      if (anyedobj.userId && anyedobj.activityId && !anyedobj.text) {
-        return true;
-      } else {
-        return false;
-      }
-    },
   },
   Image: {
     createdBy: createdByImageFieldResolver,
@@ -131,28 +112,22 @@ export const resolvers: IResolvers = {
   Follow: {
     by: followByResolver,
     towards: followTowardsResolver,
-    isTypeOf: (obj) => {
-      console.log(obj);
-
-      const anyedobj = obj as any;
-
-      if (anyedobj.towardsId && anyedobj.byId) {
-        return true;
-      } else {
-        return false;
-      }
-    },
   },
   Comment: {
     createdBy: commentCreatedByFieldResolver,
     activity: commentActivityFieldResolver,
-    isTypeOf: (obj) => {
-      console.log(obj);
-
-      if (obj.text !== undefined) {
-        return true;
+  },
+  FeedItem: {
+    resolveType: (obj) => {
+      const anyedobj = obj as any;
+      if (anyedobj.text) {
+        return "Comment";
+      } else if (anyedobj.title || anyedobj.title === "") {
+        return "Activity";
+      } else if (anyedobj.towardsId && anyedobj.byId) {
+        return "Follow";
       } else {
-        return false;
+        return "Participation";
       }
     },
   },
