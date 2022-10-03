@@ -64,6 +64,8 @@ export type Query = {
   activities: Array<Activity>;
   /** a single public activity */
   activity?: Maybe<Activity>;
+  feed?: Maybe<Array<FeedItem>>;
+  participations: Array<Participation>;
 };
 
 export type QueryuserArgs = {
@@ -282,6 +284,8 @@ export type ActivityInput = {
   imageId?: InputMaybe<Scalars["String"]>;
 };
 
+export type FeedItem = Activity | Follow | Comment | Participation;
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
@@ -407,6 +411,11 @@ export type ResolversTypes = {
   Comment: ResolverTypeWrapper<Comment>;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
+  FeedItem:
+    | ResolversTypes["Activity"]
+    | ResolversTypes["Follow"]
+    | ResolversTypes["Comment"]
+    | ResolversTypes["Participation"];
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -435,6 +444,11 @@ export type ResolversParentTypes = {
   Comment: Comment;
   NamePasswordInput: NamePasswordInput;
   ActivityInput: ActivityInput;
+  FeedItem:
+    | ResolversParentTypes["Activity"]
+    | ResolversParentTypes["Follow"]
+    | ResolversParentTypes["Comment"]
+    | ResolversParentTypes["Participation"];
 };
 
 export interface DateTimeScalarConfig
@@ -489,6 +503,16 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryactivityArgs, "id">
+  >;
+  feed?: Resolver<
+    Maybe<Array<ResolversTypes["FeedItem"]>>,
+    ParentType,
+    ContextType
+  >;
+  participations?: Resolver<
+    Array<ResolversTypes["Participation"]>,
+    ParentType,
+    ContextType
   >;
 };
 
@@ -769,6 +793,17 @@ export type CommentResolvers<
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FeedItemResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["FeedItem"] = ResolversParentTypes["FeedItem"]
+> = {
+  resolveType: TypeResolveFn<
+    "Activity" | "Follow" | "Comment" | "Participation",
+    ParentType,
+    ContextType
+  >;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
@@ -782,6 +817,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Image?: ImageResolvers<ContextType>;
   Follow?: FollowResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
+  FeedItem?: FeedItemResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (

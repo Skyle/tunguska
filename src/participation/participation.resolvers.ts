@@ -1,7 +1,22 @@
 // FieldResolvers
 
 import { prisma } from "..";
-import { ParticipationResolvers } from "../graphql/generated";
+import { verifyUserOrThrow } from "../auth/auth.services";
+import { ParticipationResolvers, QueryResolvers } from "../graphql/generated";
+
+// Queries
+
+export const participations: QueryResolvers["participations"] = async (
+  root,
+  args,
+  ctx
+) => {
+  const user = await verifyUserOrThrow(ctx);
+  const requestedParticipations = await prisma.participationDB.findMany({});
+  console.log(new Date(), user?.name, "requested participations");
+
+  return requestedParticipations;
+};
 
 // FieldResolvers
 

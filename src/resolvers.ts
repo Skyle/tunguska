@@ -9,11 +9,12 @@ import {
   imageActivityFieldResolver,
   joinActivity,
   leaveActivity,
-  participations,
+  activityParticipationsFieldResolver,
   updateActivity,
 } from "./activity/activity.resolvers";
 import {
   activityParticipationFieldResolver,
+  participations,
   userParticipationFieldResolver,
 } from "./participation/participation.resolvers";
 import { signIn, signUp } from "./auth/auth.resolvers";
@@ -38,6 +39,7 @@ import {
 import {
   follow,
   followByResolver,
+  followIsTypeOfResolver,
   followTowardsResolver,
   unfollow,
 } from "./follow/follow.resolvers";
@@ -47,6 +49,7 @@ import {
   createComment,
   deleteComment,
 } from "./comment/comment.resolvers";
+import { feed } from "./feed/feed.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -57,6 +60,10 @@ export const resolvers: IResolvers = {
     // activity
     activities: activities,
     activity: activity,
+    // feed
+    feed: feed,
+    // participation
+    participations: participations,
   },
 
   Mutation: {
@@ -82,9 +89,16 @@ export const resolvers: IResolvers = {
   },
   Activity: {
     createdBy: createdBy,
-    participations: participations,
+    participations: activityParticipationsFieldResolver,
     image: imageActivityFieldResolver,
     comments: activityCommentsFieldResolver,
+    isTypeOf: (obj, lol) => {
+      if (obj.title) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   User: {
     createdActivities: createdActivities,
@@ -98,6 +112,14 @@ export const resolvers: IResolvers = {
   Participation: {
     user: userParticipationFieldResolver,
     activity: activityParticipationFieldResolver,
+    isTypeOf: (obj) => {
+      const anyedobj = obj as any;
+      if (anyedobj.userId && anyedobj.activityId && !anyedobj.text) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   Image: {
     createdBy: createdByImageFieldResolver,
@@ -106,9 +128,25 @@ export const resolvers: IResolvers = {
   Follow: {
     by: followByResolver,
     towards: followTowardsResolver,
+    isTypeOf: (obj) => {
+      const anyedobj = obj as any;
+
+      if (anyedobj.towardsId && anyedobj.byId) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   Comment: {
     createdBy: commentCreatedByFieldResolver,
     activity: commentActivityFieldResolver,
+    isTypeOf: (obj) => {
+      if (obj.text) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 };

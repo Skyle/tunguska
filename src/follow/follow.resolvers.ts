@@ -1,7 +1,13 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { MercuriusContext } from "mercurius";
 import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
-import { FollowResolvers, MutationResolvers } from "../graphql/generated";
+import {
+  Follow,
+  FollowResolvers,
+  IsTypeOfResolverFn,
+  MutationResolvers,
+} from "../graphql/generated";
 
 export const follow: MutationResolvers["follow"] = async (
   root,
@@ -20,6 +26,7 @@ export const follow: MutationResolvers["follow"] = async (
         towards: { connect: { id: userToFollow.id } },
       },
     });
+    console.log(new Date(), verifiedUser.name, "followed", userToFollow.name);
     return newFollow;
   } catch (error) {
     if (

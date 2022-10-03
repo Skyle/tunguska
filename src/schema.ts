@@ -43,6 +43,8 @@ export const schema = gql`
     a single public activity
     """
     activity(id: ID!): Activity
+    feed: [FeedItem!]
+    participations: [Participation!]!
   }
 
   type Mutation {
@@ -215,4 +217,6 @@ export const schema = gql`
     smokingAllowed: Boolean
     imageId: String
   }
+
+  union FeedItem = Activity | Follow | Comment | Participation
 `;
