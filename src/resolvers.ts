@@ -149,7 +149,7 @@ export const resolvers: IResolvers = {
     isTypeOf: (obj) => {
       console.log(obj);
 
-      if (obj.text) {
+      if (obj.text !== undefined) {
         return true;
       } else {
         return false;
