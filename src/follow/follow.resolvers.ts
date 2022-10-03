@@ -1,13 +1,7 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-import { MercuriusContext } from "mercurius";
 import { prisma } from "..";
 import { verifyUserOrThrow } from "../auth/auth.services";
-import {
-  Follow,
-  FollowResolvers,
-  IsTypeOfResolverFn,
-  MutationResolvers,
-} from "../graphql/generated";
+import { FollowResolvers, MutationResolvers } from "../graphql/generated";
 
 export const follow: MutationResolvers["follow"] = async (
   root,
@@ -62,8 +56,11 @@ export const unfollow: MutationResolvers["unfollow"] = async (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
-      console.error("You are not following this User");
-
+      console.error(
+        new Date(),
+        verifiedUser.name,
+        "id not following this User"
+      );
       throw new Error("You are not following this User");
     }
     throw new Error("Follow could not be deleted");
@@ -73,6 +70,7 @@ export const unfollow: MutationResolvers["unfollow"] = async (
     where: { id: verifiedUser.id },
   });
   if (!updatedVerifiedUser) throw new Error("User not found");
+  console.log(new Date(), verifiedUser.name, "unfollowed", userToUnfollow.name);
   return updatedVerifiedUser;
 };
 

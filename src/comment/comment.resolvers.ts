@@ -70,8 +70,6 @@ export const deleteComment: MutationResolvers["deleteComment"] = async (
 
 export const commentCreatedByFieldResolver: CommentResolvers["createdBy"] =
   async (root) => {
-    console.log(root);
-
     const createdBy = await prisma.commentDB
       .findUnique({ where: { id: root.id } })
       .createdBy();

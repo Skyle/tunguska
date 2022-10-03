@@ -28,6 +28,7 @@ export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
   const sortedFeedData = returnFeedData.sort((a, b) => {
     return b.createdAt.getTime() - a.createdAt.getTime();
   });
+  if (user) console.log(new Date(), user?.name, "requested feed");
 
   return sortedFeedData.slice(0, 10);
 };

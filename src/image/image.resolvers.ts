@@ -46,6 +46,12 @@ export const uploadImage: MutationResolvers["uploadImage"] = async (
       where: { id: newImage.id },
       data: { uploadCompleted: true },
     });
+    console.log(
+      new Date(),
+      verifiedUser.name,
+      "uploaded image",
+      updatedImage.id
+    );
     return updatedImage;
   } catch (error) {
     console.error(error);

@@ -16,6 +16,7 @@ export const signUp: MutationResolvers["signUp"] = async (
       data: { name: name, password: hashedPassword },
     });
     const jwt = ctx.app.jwt.sign({ sub: newUser.id });
+    console.log(new Date(), newUser.name, "signed up");
     return jwt;
   } catch (error) {
     console.error(error);
@@ -33,10 +34,10 @@ export const signIn: MutationResolvers["signIn"] = async (
   const user = await prisma.userDB.findUnique({
     where: { name: name },
   });
-  console.log(user?.name, " erstellt");
   if (!user) throw new Error("can not sign in");
   const passwordValid = await argon2.verify(user.password, password);
   if (!passwordValid) throw new Error("can not sign in");
+  console.log(new Date(), user.name, "signed in");
   const jwt = ctx.app.jwt.sign({ sub: user.id });
   return jwt;
 };

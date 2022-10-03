@@ -22,7 +22,7 @@ export const activities: QueryResolvers["activities"] = async (
     skip: args.skip ?? 0,
     orderBy: { createdAt: args.order === "ASC" ? "asc" : "desc" },
   });
-  console.log(new Date(), user?.name, "requested activities");
+  if (user) console.log(new Date(), user?.name, "requested activities");
 
   return requestedActivities;
 };
@@ -32,7 +32,7 @@ export const activity: QueryResolvers["activity"] = async (root, args, ctx) => {
   const requestedActivity = await prisma.activityDB.findUnique({
     where: { id: args.id },
   });
-  console.log(new Date(), user?.name, "requested activity ", args.id);
+  if (user) console.log(new Date(), user?.name, "requested activity ", args.id);
   return requestedActivity;
 };
 
@@ -59,8 +59,9 @@ export const createActivity: MutationResolvers["createActivity"] = async (
       },
     });
     console.log(
+      new Date(),
       verifiedUser.name,
-      " created activity ",
+      "created activity",
       createdActivities.title
     );
     return createdActivities;
@@ -85,7 +86,12 @@ export const deleteActivity: MutationResolvers["deleteActivity"] = async (
   }
   try {
     await prisma.activityDB.delete({ where: { id: activity.id } });
-    console.log(verifiedUser.name, " deleted activity ", activity.title);
+    console.log(
+      new Date(),
+      verifiedUser.name,
+      "deleted activity",
+      activity.title
+    );
     return "Activity " + activity.id + " deleted";
   } catch (error) {
     console.error(error);
@@ -151,6 +157,12 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
         user: { connect: { id: verifiedUser.id } },
       },
     });
+    console.log(
+      new Date(),
+      verifiedUser.name,
+      "joined activity",
+      activity.title
+    );
     return await prisma.activityDB.update({
       where: { id: activity.id },
       data: { updatedAt: new Date() },
@@ -160,6 +172,11 @@ export const joinActivity: MutationResolvers["joinActivity"] = async (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
+      console.error(
+        verifiedUser.name,
+        "already joined activity",
+        activity.title
+      );
       throw new Error("You already joined this Activity");
     }
     console.error(error);
@@ -188,6 +205,12 @@ export const leaveActivity: MutationResolvers["leaveActivity"] = async (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
+      console.error(
+        new Date(),
+        verifiedUser.name,
+        "already left activity",
+        activity.title
+      );
       throw new Error("You are not attending this Activity");
     }
     console.error(error);
@@ -199,6 +222,12 @@ export const leaveActivity: MutationResolvers["leaveActivity"] = async (
   });
   if (!updatedActivity) throw new Error("Activity could not be found");
 
+  console.log(
+    new Date(),
+    verifiedUser.name,
+    "left activity",
+    updatedActivity.title
+  );
   return updatedActivity;
 };
 
