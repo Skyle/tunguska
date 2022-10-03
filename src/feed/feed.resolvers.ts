@@ -6,10 +6,13 @@ import { QueryResolvers } from "../graphql/generated";
 
 export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
   const user = await verifyUser(ctx);
-  const activities = prisma.activityDB.findMany({ where: { public: true } });
-  const comments = prisma.commentDB.findMany({});
-  const participations = prisma.participationDB.findMany({});
-  const follows = prisma.followDB.findMany({});
+  const activities = prisma.activityDB.findMany({
+    where: { public: true },
+    take: 10,
+  });
+  const comments = prisma.commentDB.findMany({ take: 10 });
+  const participations = prisma.participationDB.findMany({ take: 10 });
+  const follows = prisma.followDB.findMany({ take: 10 });
   const feedData = await Promise.all([
     activities,
     comments,
