@@ -5,7 +5,7 @@ import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
 import { QueryResolvers } from "../graphql/generated";
 
 export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
-  const user = await verifyUserOrThrow(ctx);
+  const user = await verifyUser(ctx);
   const activities = prisma.activityDB.findMany({ where: { public: true } });
   const comments = prisma.commentDB.findMany({});
   const participations = prisma.participationDB.findMany({});
@@ -26,5 +26,5 @@ export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
     return b.createdAt.getTime() - a.createdAt.getTime();
   });
 
-  return sortedFeedData;
+  return sortedFeedData.slice(0, 10);
 };

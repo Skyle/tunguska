@@ -44,6 +44,9 @@ export const createActivity: MutationResolvers["createActivity"] = async (
   ctx
 ) => {
   const verifiedUser = await verifyUserOrThrow(ctx);
+  if (activityInput.title === "") {
+    throw new Error("Title should not be empty");
+  }
   try {
     const createdActivities = await prisma.activityDB.create({
       data: {
