@@ -92,6 +92,8 @@ export const resolvers: IResolvers = {
     image: imageActivityFieldResolver,
     comments: activityCommentsFieldResolver,
     isTypeOf: (obj, lol) => {
+      console.log(obj);
+
       if (obj.title) {
         return true;
       } else {
@@ -112,6 +114,8 @@ export const resolvers: IResolvers = {
     user: userParticipationFieldResolver,
     activity: activityParticipationFieldResolver,
     isTypeOf: (obj) => {
+      console.log(obj);
+
       const anyedobj = obj as any;
       if (anyedobj.userId && anyedobj.activityId && !anyedobj.text) {
         return true;
@@ -128,6 +132,8 @@ export const resolvers: IResolvers = {
     by: followByResolver,
     towards: followTowardsResolver,
     isTypeOf: (obj) => {
+      console.log(obj);
+
       const anyedobj = obj as any;
 
       if (anyedobj.towardsId && anyedobj.byId) {
@@ -141,6 +147,8 @@ export const resolvers: IResolvers = {
     createdBy: commentCreatedByFieldResolver,
     activity: commentActivityFieldResolver,
     isTypeOf: (obj) => {
+      console.log(obj);
+
       if (obj.text) {
         return true;
       } else {
