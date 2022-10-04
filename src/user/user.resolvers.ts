@@ -15,7 +15,12 @@ export const user: QueryResolvers["user"] = async (root, args, ctx) => {
     where: { id: args.id },
   });
   if (authUser)
-    console.log(new Date(), authUser.name, "requested user ", args.id);
+    console.log(
+      new Date(),
+      authUser.name,
+      "requested user ",
+      requestedUser?.name
+    );
   return requestedUser;
 };
 
