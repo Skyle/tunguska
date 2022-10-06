@@ -9,6 +9,7 @@ export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
   const activities = prisma.activityDB.findMany({
     where: { public: true },
     take: 10,
+    orderBy: { createdAt: "desc" },
   });
   const comments = prisma.commentDB.findMany({ take: 10 });
   const participations = prisma.participationDB.findMany({ take: 10 });
