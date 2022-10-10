@@ -49,6 +49,7 @@ import {
   deleteComment,
 } from "./comment/comment.resolvers";
 import { feed } from "./feed/feed.resolvers";
+import { search } from "./search/search.resolvers";
 
 export const resolvers: IResolvers = {
   Query: {
@@ -63,6 +64,8 @@ export const resolvers: IResolvers = {
     feed: feed,
     // participation
     participations: participations,
+    //search
+    search: search,
   },
 
   Mutation: {
@@ -128,6 +131,16 @@ export const resolvers: IResolvers = {
         return "Follow";
       } else {
         return "Participation";
+      }
+    },
+  },
+  SearchResult: {
+    resolveType: (obj) => {
+      const anyedobj = obj as any;
+      if (anyedobj.name) {
+        return "User";
+      } else {
+        return "Activity";
       }
     },
   },

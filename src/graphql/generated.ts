@@ -70,6 +70,7 @@ export type Query = {
   activity?: Maybe<Activity>;
   feed?: Maybe<Array<FeedItem>>;
   participations: Array<Participation>;
+  search: Array<SearchResult>;
 };
 
 export type QueryuserArgs = {
@@ -85,6 +86,10 @@ export type QueryactivitiesArgs = {
 
 export type QueryactivityArgs = {
   id: Scalars["ID"];
+};
+
+export type QuerysearchArgs = {
+  term: Scalars["String"];
 };
 
 export type Mutation = {
@@ -291,6 +296,8 @@ export type ActivityInput = {
 
 export type FeedItem = Activity | Follow | Comment | Participation;
 
+export type SearchResult = Activity | User;
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
@@ -406,8 +413,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
-  Mutation: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars["String"]>;
+  Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   Activity: ResolverTypeWrapper<Activity>;
   Participation: ResolverTypeWrapper<Participation>;
@@ -421,6 +428,7 @@ export type ResolversTypes = {
     | ResolversTypes["Follow"]
     | ResolversTypes["Comment"]
     | ResolversTypes["Participation"];
+  SearchResult: ResolversTypes["Activity"] | ResolversTypes["User"];
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -439,8 +447,8 @@ export type ResolversParentTypes = {
   Query: {};
   Float: Scalars["Float"];
   Boolean: Scalars["Boolean"];
-  Mutation: {};
   String: Scalars["String"];
+  Mutation: {};
   User: User;
   Activity: Activity;
   Participation: Participation;
@@ -454,6 +462,7 @@ export type ResolversParentTypes = {
     | ResolversParentTypes["Follow"]
     | ResolversParentTypes["Comment"]
     | ResolversParentTypes["Participation"];
+  SearchResult: ResolversParentTypes["Activity"] | ResolversParentTypes["User"];
 };
 
 export interface DateTimeScalarConfig
@@ -518,6 +527,12 @@ export type QueryResolvers<
     Array<ResolversTypes["Participation"]>,
     ParentType,
     ContextType
+  >;
+  search?: Resolver<
+    Array<ResolversTypes["SearchResult"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerysearchArgs, "term">
   >;
 };
 
@@ -809,6 +824,13 @@ export type FeedItemResolvers<
   >;
 };
 
+export type SearchResultResolvers<
+  ContextType = MercuriusContext,
+  ParentType extends ResolversParentTypes["SearchResult"] = ResolversParentTypes["SearchResult"]
+> = {
+  resolveType: TypeResolveFn<"Activity" | "User", ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
   DateTime?: GraphQLScalarType;
   JWT?: GraphQLScalarType;
@@ -823,6 +845,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
   Follow?: FollowResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   FeedItem?: FeedItemResolvers<ContextType>;
+  SearchResult?: SearchResultResolvers<ContextType>;
 };
 
 export type Loader<TReturn, TObj, TParams, TContext> = (

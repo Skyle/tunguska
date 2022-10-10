@@ -58,6 +58,7 @@ export const schema = gql`
     activity(id: ID!): Activity
     feed: [FeedItem!]
     participations: [Participation!]!
+    search(term: String!): [SearchResult!]!
   }
 
   type Mutation {
@@ -232,4 +233,5 @@ export const schema = gql`
   }
 
   union FeedItem = Activity | Follow | Comment | Participation
+  union SearchResult = Activity | User
 `;
