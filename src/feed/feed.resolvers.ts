@@ -11,9 +11,18 @@ export const feed: QueryResolvers["feed"] = async (root, args, ctx) => {
     take: 10,
     orderBy: { createdAt: "desc" },
   });
-  const comments = prisma.commentDB.findMany({ take: 10 });
-  const participations = prisma.participationDB.findMany({ take: 10 });
-  const follows = prisma.followDB.findMany({ take: 10 });
+  const comments = prisma.commentDB.findMany({
+    take: 10,
+    orderBy: { createdAt: "desc" },
+  });
+  const participations = prisma.participationDB.findMany({
+    take: 10,
+    orderBy: { createdAt: "desc" },
+  });
+  const follows = prisma.followDB.findMany({
+    take: 10,
+    orderBy: { createdAt: "desc" },
+  });
   const feedData = await Promise.all([
     activities,
     comments,
