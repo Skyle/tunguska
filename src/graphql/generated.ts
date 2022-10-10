@@ -80,6 +80,7 @@ export type QueryactivitiesArgs = {
   limit?: InputMaybe<Scalars["Float"]>;
   skip?: InputMaybe<Scalars["Float"]>;
   order?: InputMaybe<Order>;
+  past?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type QueryactivityArgs = {
@@ -404,10 +405,10 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Query: ResolverTypeWrapper<{}>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Mutation: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Activity: ResolverTypeWrapper<Activity>;
   Participation: ResolverTypeWrapper<Participation>;
   Image: ResolverTypeWrapper<Image>;
@@ -437,10 +438,10 @@ export type ResolversParentTypes = {
   ID: Scalars["ID"];
   Query: {};
   Float: Scalars["Float"];
+  Boolean: Scalars["Boolean"];
   Mutation: {};
   String: Scalars["String"];
   User: User;
-  Boolean: Scalars["Boolean"];
   Activity: Activity;
   Participation: Participation;
   Image: Image;

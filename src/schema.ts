@@ -46,7 +46,12 @@ export const schema = gql`
     """
     all public activities
     """
-    activities(limit: Float, skip: Float, order: Order): [Activity!]!
+    activities(
+      limit: Float
+      skip: Float
+      order: Order
+      past: Boolean
+    ): [Activity!]!
     """
     a single public activity
     """

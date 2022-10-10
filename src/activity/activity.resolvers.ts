@@ -34,9 +34,12 @@ export const activities: QueryResolvers["activities"] = async (
   ctx
 ) => {
   const user = await verifyUser(ctx);
-  args.order;
+
   const requestedActivities = await prisma.activityDB.findMany({
-    where: { public: true },
+    where: {
+      public: true,
+      startsAt: { gte: args.past === true ? undefined : new Date() },
+    },
     take: args.limit ?? 10,
     skip: args.skip ?? 0,
     orderBy: activitiesOrder(args.order),
