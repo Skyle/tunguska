@@ -14,6 +14,14 @@ export const schema = gql`
     createdAt descending
     """
     DESC
+    """
+    startsAt ascending
+    """
+    STARTSATASC
+    """
+    startsAt descending
+    """
+    STARTSATDESC
   }
 
   interface Node {

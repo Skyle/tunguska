@@ -44,6 +44,10 @@ export enum Order {
   ASC = "ASC",
   /** createdAt descending */
   DESC = "DESC",
+  /** startsAt ascending */
+  STARTSATASC = "STARTSATASC",
+  /** startsAt descending */
+  STARTSATDESC = "STARTSATDESC",
 }
 
 export type Node = {

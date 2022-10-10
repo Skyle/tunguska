@@ -1,14 +1,32 @@
-import { ImageDB } from "@prisma/client";
+import { ImageDB, Prisma } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { prisma } from "..";
 import { verifyUser, verifyUserOrThrow } from "../auth/auth.services";
 import {
   ActivityResolvers,
+  InputMaybe,
   MutationResolvers,
+  Order,
+  QueryactivitiesArgs,
   QueryResolvers,
 } from "../graphql/generated";
 
 // Queries
+
+function activitiesOrder(
+  order: InputMaybe<Order> | undefined
+): Prisma.Enumerable<Prisma.ActivityDBOrderByWithRelationInput> {
+  if (order === "ASC") {
+    return { createdAt: "asc" };
+  } else if (order === "DESC") {
+    return { createdAt: "desc" };
+  } else if (order === "STARTSATASC") {
+    return { startsAt: "asc" };
+  } else if (order === "STARTSATDESC") {
+    return { startsAt: "desc" };
+  }
+  return { createdAt: "desc" };
+}
 
 export const activities: QueryResolvers["activities"] = async (
   root,
@@ -16,11 +34,12 @@ export const activities: QueryResolvers["activities"] = async (
   ctx
 ) => {
   const user = await verifyUser(ctx);
+  args.order;
   const requestedActivities = await prisma.activityDB.findMany({
     where: { public: true },
     take: args.limit ?? 10,
     skip: args.skip ?? 0,
-    orderBy: { createdAt: args.order === "ASC" ? "asc" : "desc" },
+    orderBy: activitiesOrder(args.order),
   });
   if (user) console.log(new Date(), user?.name, "requested activities");
 
