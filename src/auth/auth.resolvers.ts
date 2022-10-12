@@ -8,8 +8,7 @@ export const signUp: MutationResolvers["signUp"] = async (
   ctx
 ) => {
   const { name, password } = credentials;
-  if (password.length < 6 || name === "" || name.length < 2)
-    throw new Error("name or password are too short");
+
   const hashedPassword = await argon2.hash(password);
   try {
     const newUser = await prisma.userDB.create({
